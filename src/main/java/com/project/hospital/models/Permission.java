@@ -3,7 +3,10 @@ package com.project.hospital.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,4 +31,15 @@ public class Permission {
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
+
+
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedDate;
 }
