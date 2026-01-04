@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,5 +40,18 @@ public class Role {
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<User> users = new HashSet<>();
+
+
+
+
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedDate;
 
 }
