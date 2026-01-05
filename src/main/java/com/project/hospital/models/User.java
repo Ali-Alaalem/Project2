@@ -40,7 +40,6 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-
     //"friday":<
     // "from":3am,
     // "to":"4pm"
@@ -52,6 +51,10 @@ public class User {
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Appointment> appointments = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "treatement_id")
+    private TreatementType userTreatementType;
 
     @Column
     @CreationTimestamp
