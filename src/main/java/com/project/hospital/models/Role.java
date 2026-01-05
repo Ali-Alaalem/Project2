@@ -40,11 +40,7 @@ public class Role {
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<User> users = new HashSet<>();
-
-
-
-
-
+    
     @Column
     @CreationTimestamp
     private LocalDateTime createdDate;
