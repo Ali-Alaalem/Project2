@@ -41,7 +41,7 @@ public class PersonService {
             updatedPerson.setPersonId(personId);
             return this.personRepository.save(updatedPerson);
         }else{
-
+            throw new InformationNotFoundException("No person with the id " + personId);
         }
     }
 
