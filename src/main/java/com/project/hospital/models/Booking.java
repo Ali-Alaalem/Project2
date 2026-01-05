@@ -30,5 +30,11 @@ public class Booking {
     @OneToOne(mappedBy = "booking")
     private Appointment appointment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id", nullable = false)
+    private User patient;
+
+
+
 
 }
