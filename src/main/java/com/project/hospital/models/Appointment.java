@@ -28,12 +28,15 @@ public class Appointment {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @Column
-    private String purpose;
 
-    @CreationTimestamp
-    private LocalDateTime bookedAt;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 
+
+    // start time and end time fixed,
+    // for example doctor ali start from 6-9, in booking
+    // 6:00,6:30 every booking 30 min,
     @Column(nullable = false)
     private LocalDateTime startTime;
 
