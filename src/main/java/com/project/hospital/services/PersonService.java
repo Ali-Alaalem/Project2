@@ -1,5 +1,6 @@
 package com.project.hospital.services;
 
+import com.project.hospital.exceptions.InformationExistException;
 import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.Person;
 import com.project.hospital.repositorys.PersonRepository;
@@ -32,13 +33,25 @@ public class PersonService {
         return this.personRepository.findAll();
     }
 
+
     public Person updatePerson(Long personId, Person updatedPerson){
         System.out.println("Service calling updatePerson");
         Optional<Person> person = this.personRepository.findById(personId);
         if(person.isPresent()){
+            updatedPerson.setPersonId(personId);
             return this.personRepository.save(updatedPerson);
         }else{
             throw new InformationNotFoundException("No person with the id " + personId);
+        }
+    }
+
+    // to-do: consider making cpr the id field.
+    public Person createPerson(Person person){
+        System.out.println("Service is calling update");
+        if(this.personRepository.findById(person.getPersonId()).isPresent()){
+            return this.personRepository.save(person);
+        }else{
+            throw new InformationExistException("A person with the id " + person.getPersonId() + " already exists");
         }
     }
 }
