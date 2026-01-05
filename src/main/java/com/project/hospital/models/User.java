@@ -45,7 +45,7 @@ public class User {
     // "to":"4pm"
     // >;
     @Column
-    private HashMap<String, HashMap<String, LocalTime>> workDaysAndHours;
+    private HashMap<String, HashMap<String, LocalTime>> workDaysAndHours = new HashMap<>();
 
 
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
@@ -55,6 +55,9 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "treatement_id")
     private TreatementType userTreatementType;
+
+    @OneToMany(mappedBy = "patient")
+    private Set<Booking> bookings = new HashSet<>();
 
     @Column
     @CreationTimestamp
