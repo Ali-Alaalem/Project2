@@ -41,17 +41,28 @@ public class PersonService {
             updatedPerson.setPersonId(personId);
             return this.personRepository.save(updatedPerson);
         }else{
-            throw new InformationNotFoundException("No person with the id " + personId);
+
         }
     }
 
     // to-do: consider making cpr the id field.
     public Person createPerson(Person person){
-        System.out.println("Service is calling update");
-        if(this.personRepository.findById(person.getPersonId()).isPresent()){
+        System.out.println("Service is calling createPerson");
+        if(this.personRepository.findById(person.getPersonId()).isEmpty()){
             return this.personRepository.save(person);
         }else{
             throw new InformationExistException("A person with the id " + person.getPersonId() + " already exists");
+        }
+    }
+
+    public Person deletePerson(Long personId){
+        System.out.println("Service is calling deletePerson");
+        Optional<Person> person = this.personRepository.findById(personId);
+        if(person.isPresent()){
+            this.personRepository.deleteById(personId);
+            return person.get();
+        }else{
+            throw new InformationNotFoundException("No person with the id " + personId);
         }
     }
 }
