@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,9 +31,22 @@ public class Room {
     @Column
     private String description;
 
+    //"friday":<
+    // "from":3am,
+    // "to":"4pm"
+    // >;
+    @Column
+    private HashMap<String, HashMap<String, LocalTime>> workDaysAndHours;
+
+
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<Appointment> schedules = new HashSet<>();
+    private Set<Appointment> appointments;
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "treatement_type_id")
+    private TreatementType roomTreatementType;
 
     @Column
     @CreationTimestamp
