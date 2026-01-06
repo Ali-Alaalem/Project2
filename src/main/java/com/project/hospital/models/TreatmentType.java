@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "treatementType")
-public class TreatementType {
+@Table(name = "treatmentType")
+public class TreatmentType {
 
     @Id
     @Column
@@ -26,10 +26,10 @@ public class TreatementType {
     @Column
     private String type;
 
-    @OneToOne(mappedBy = "roomTreatementType",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "roomTreatmentType",fetch = FetchType.LAZY)
     private Room room;
 
-    @OneToOne(mappedBy = "userTreatementType",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "userTreatmentType",fetch = FetchType.LAZY)
     private User user;
 
     @Column
