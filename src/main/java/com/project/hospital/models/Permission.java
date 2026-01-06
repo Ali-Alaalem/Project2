@@ -23,6 +23,14 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    // table:action
+    // user:create
+    // user:view
+    // user:delete
+    // user:update
+    // boolean canCreatePatient = userHasPermission("patient:create");
+    // function middlewarename(modeltype:create)
     @Column(nullable = false, unique = true)
     private String action;
 
@@ -30,8 +38,6 @@ public class Permission {
     @ManyToMany(mappedBy = "permissions")
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
-
-
 
 
     @Column

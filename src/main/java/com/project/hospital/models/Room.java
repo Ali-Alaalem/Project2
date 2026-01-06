@@ -9,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -45,8 +44,8 @@ public class Room {
 
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "treatement_type_id")
-    private TreatementType roomTreatementType;
+    @JoinColumn(name = "treatment_type_id")
+    private TreatmentType roomTreatmentType;
 
     @Column
     @CreationTimestamp

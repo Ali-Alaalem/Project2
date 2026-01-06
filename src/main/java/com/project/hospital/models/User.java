@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -53,8 +52,8 @@ public class User {
     private Set<Appointment> appointments = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "treatement_id")
-    private TreatementType userTreatementType;
+    @JoinColumn(name = "treatment_id")
+    private TreatmentType userTreatmentType;
 
     @OneToMany(mappedBy = "patient")
     private Set<Booking> bookings = new HashSet<>();
