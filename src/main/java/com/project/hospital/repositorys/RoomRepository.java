@@ -1,4 +1,9 @@
 package com.project.hospital.repositorys;
 
-public interface RoomRepository {
+import com.project.hospital.models.Room;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RoomRepository extends JpaRepository<Room, Long> {
+
+
 }
