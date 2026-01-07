@@ -42,7 +42,13 @@ public class UserController {
         return this.personService.getPersonByUser(user);
     }
 
-
+    @PostMapping("/{userId}/person")
+    public Person getPerson(@PathVariable("userId") Long userId, @RequestBody Person person){
+        System.out.println("Controller calling ==> getPerson()");
+        User user = this.userService.getUser(userId);
+        person.setUser(user);
+        return this.personService.createPerson(person);
+    }
 
 
 }
