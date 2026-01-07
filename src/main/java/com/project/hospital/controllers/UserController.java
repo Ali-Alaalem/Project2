@@ -38,6 +38,7 @@ public class UserController {
 //    @GetMapping("/login/{userId}/person")
 //    public Person getPerson(@PathVariable("userId") Long userId){
 //        System.out.println("Controller calling ==> getPerson()");
-//        Optional<User> user = this.userService.
+//        User user = this.userService.getUser(userId);
+//        Person person = this.personService
 //    }
 }

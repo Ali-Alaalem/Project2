@@ -7,6 +7,7 @@ import com.project.hospital.repositorys.PersonRepository;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.plugins.jpeg.JPEGImageReadParam;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +64,16 @@ public class PersonService {
             return person.get();
         }else{
             throw new InformationNotFoundException("No person with the id " + personId);
+        }
+    }
+
+    public Person getPersonByUserId(Long userId){
+        System.out.println("Service is calling ==> getPersonByUser()");
+        Optional<Person> person = this.personRepository.findByUser(userId);
+        if(person.isPresent()){
+            return person.get();
+        }else{
+            throw new InformationNotFoundException("User " + userId + " has no person details");
         }
     }
 }
