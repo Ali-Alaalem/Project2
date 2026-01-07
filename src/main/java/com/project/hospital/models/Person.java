@@ -1,6 +1,7 @@
 package com.project.hospital.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -62,4 +63,8 @@ public class Person {
                 ", photo='" + photo + '\'' +
                 '}';
     }
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private User user;
 }
