@@ -57,7 +57,16 @@ public class UserController {
         person.setUser(user);
         return this.personService.updatePerson(person.getPersonId(), person);
     }
-    
+
+    @DeleteMapping
+    public Person deletePerson(@PathVariable("userId") Long userId){
+        return this.personService.deletePerson(
+                    this.personService.getPersonByUser(
+                            this.userService.getUser(userId)
+                    ).getPersonId()
+        );
+    }
+
 
 
 }
