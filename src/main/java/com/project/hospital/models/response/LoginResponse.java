@@ -1,4 +1,4 @@
-package com.project.hospital.response;
+package com.project.hospital.models.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

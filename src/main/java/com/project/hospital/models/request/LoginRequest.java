@@ -1,4 +1,4 @@
-package com.project.hospital.request;
+package com.project.hospital.models.request;
 
 import lombok.Getter;
 
@@ -6,5 +6,5 @@ import lombok.Getter;
 public class LoginRequest {
     private String email;
     private String password;
-}
 
+}
