@@ -57,6 +57,10 @@ public class User {
     @OneToMany(mappedBy = "patient")
     private Set<Booking> bookings = new HashSet<>();
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private Person person;
+
     @Column
     @CreationTimestamp
     private LocalDateTime createdDate;

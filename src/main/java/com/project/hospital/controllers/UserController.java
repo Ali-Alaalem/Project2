@@ -1,19 +1,19 @@
 package com.project.hospital.controllers;
 
+import com.project.hospital.models.Person;
 import com.project.hospital.models.User;
 import com.project.hospital.models.request.LoginRequest;
+import com.project.hospital.services.PersonService;
 import com.project.hospital.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth/users")
 public class UserController {
     private UserService userService;
+    private PersonService personService;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -30,6 +30,12 @@ public class UserController {
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest){
         System.out.println("Calling loginUser ==>");
         return userService.loginUser(loginRequest);
+
+    }
+
+    @GetMapping("/login/{userId}/person")
+    public Person getPerson(@PathVariable("userId") Long userId){
+        System.out.println("Controller calling ==> getPerson()");
 
     }
 }
