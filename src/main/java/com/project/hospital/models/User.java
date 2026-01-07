@@ -25,7 +25,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column // todo: remove it after person is complete
     private String fullName;
 
     @Column(unique = true)
@@ -57,9 +57,6 @@ public class User {
     @OneToMany(mappedBy = "patient")
     private Set<Booking> bookings = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", referencedColumnName = "id")
-    private Person person;
 
     @Column
     @CreationTimestamp
@@ -69,6 +66,11 @@ public class User {
     @Column
     @UpdateTimestamp
     private LocalDateTime updatedDate;
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private Person person;
 
 
 }

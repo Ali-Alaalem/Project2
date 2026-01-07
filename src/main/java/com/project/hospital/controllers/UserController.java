@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth/users")
 public class UserController {
@@ -33,9 +35,9 @@ public class UserController {
 
     }
 
-    @GetMapping("/login/{userId}/person")
-    public Person getPerson(@PathVariable("userId") Long userId){
-        System.out.println("Controller calling ==> getPerson()");
-
-    }
+//    @GetMapping("/login/{userId}/person")
+//    public Person getPerson(@PathVariable("userId") Long userId){
+//        System.out.println("Controller calling ==> getPerson()");
+//        Optional<User> user = this.userService.
+//    }
 }
