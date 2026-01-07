@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PermissionRepository extends JpaRepository<Permission, Integer> {
+public interface PermissionRepository extends JpaRepository<Permission, Long> {
     Optional<Permission> findByAction(String action);
 
     boolean existsByAction(String action);
