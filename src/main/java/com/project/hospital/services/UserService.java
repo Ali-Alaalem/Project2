@@ -2,6 +2,7 @@ package com.project.hospital.services;
 
 
 import com.project.hospital.exceptions.InformationExistException;
+import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.User;
 import com.project.hospital.models.request.LoginRequest;
 import com.project.hospital.models.response.LoginResponse;
@@ -16,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -64,5 +67,16 @@ public class UserService {
         }
 
     }
+
+    public User getUser(Long userId){
+        System.out.println("Service calling ==> getUser()");
+        Optional<User> user = this.userRepository.findById(userId);
+        if(user.isPresent()){
+            return user.get();
+        }else{
+            throw new InformationNotFoundException("No user with the id " + userId + "exists.");
+        }
+    }
+
 
 }
