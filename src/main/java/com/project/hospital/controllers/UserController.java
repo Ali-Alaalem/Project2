@@ -58,7 +58,7 @@ public class UserController {
         return this.personService.updatePerson(person.getPersonId(), person);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{userId}/person")
     public Person deletePerson(@PathVariable("userId") Long userId){
         return this.personService.deletePerson(
                     this.personService.getPersonByUser(

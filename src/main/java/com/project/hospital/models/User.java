@@ -69,7 +69,7 @@ public class User {
 
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    @JoinColumn(name = "id", referencedColumnName = "person_id")
     private Person person;
 
 
