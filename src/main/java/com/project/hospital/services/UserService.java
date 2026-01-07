@@ -5,10 +5,12 @@ import com.project.hospital.exceptions.InformationExistException;
 import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.Permission;
 import com.project.hospital.models.Role;
+import com.project.hospital.models.Token;
 import com.project.hospital.models.User;
 import com.project.hospital.models.request.LoginRequest;
 import com.project.hospital.models.response.LoginResponse;
 import com.project.hospital.repositorys.RoleRepository;
+import com.project.hospital.repositorys.TokenRepository;
 import com.project.hospital.repositorys.UserRepository;
 import com.project.hospital.security.JWTUtils;
 import com.project.hospital.security.MyUserDetails;
@@ -21,11 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 import java.util.Optional;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -36,8 +35,10 @@ public class UserService {
     private MyUserDetails myUserDetails;
     private final Set<Permission> userPermissions=new HashSet<>();
     private RoleRepository roleRepository;
+    private TokenRepository tokenRepository;
+    private TokenService tokenService;
 
-    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder,
+    public UserService( TokenService tokenService,TokenRepository tokenRepository,UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder,
                        JWTUtils jwtUtils, @Lazy AuthenticationManager authenticationManager, @Lazy MyUserDetails myUserDetails,RoleRepository roleRepository){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
@@ -45,6 +46,8 @@ public class UserService {
         this.authenticationManager=authenticationManager;
         this.myUserDetails=myUserDetails;
         this.roleRepository=roleRepository;
+        this.tokenRepository=tokenRepository;
+        this.tokenService=tokenService;
     }
 
     public User findUserByEmailAddress(String email) {
@@ -54,9 +57,17 @@ public class UserService {
     public User createUser(User objectUser){
         if(!userRepository.existsByEmailAddress(objectUser.getEmailAddress())){
             objectUser.setPassword(passwordEncoder.encode(objectUser.getPassword()));
-           Optional<Role> role=roleRepository.findByName("Patient");
-           objectUser.setRole(role.get());
-            return userRepository.save(objectUser);
+            Optional<Role> role=roleRepository.findByName("Patient");
+            objectUser.setRole(role.get());
+            User user=userRepository.save(objectUser);
+            String token= UUID.randomUUID().toString();
+            Token verifyToken= new Token();
+            verifyToken.setToken(token);
+            verifyToken.setUser(user);
+            tokenRepository.save(verifyToken);
+            tokenService.sendMail(user.getEmailAddress(), token);
+
+            return user;
         }else{ throw new InformationExistException("User with email address " +objectUser.getEmailAddress() + "already exist"); }
     }
 
