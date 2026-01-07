@@ -84,7 +84,16 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-
+    public User updateUser(Long userId, User user){
+        System.out.println("Service calling ==> updateUser()");
+        Optional<User> userObject = this.userRepository.findById(userId);
+        if(userObject.isPresent()){
+            user.setId(userId);
+            return this.userRepository.save(user);
+        }else{
+            throw new InformationNotFoundException("No user with the id " + userId + "exists.");
+        }
+    }
 
 
 }
