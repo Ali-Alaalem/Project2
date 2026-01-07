@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -77,6 +78,13 @@ public class UserService {
             throw new InformationNotFoundException("No user with the id " + userId + "exists.");
         }
     }
+
+    public List<User> getUsers(){
+        System.out.println("Service calling ==> getUsers()");
+        return this.userRepository.findAll();
+    }
+
+
 
 
 }
