@@ -43,12 +43,21 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/person")
-    public Person getPerson(@PathVariable("userId") Long userId, @RequestBody Person person){
-        System.out.println("Controller calling ==> getPerson()");
+    public Person createPerson(@PathVariable("userId") Long userId, @RequestBody Person person){
+        System.out.println("Controller calling ==> createPerson()");
         User user = this.userService.getUser(userId);
         person.setUser(user);
         return this.personService.createPerson(person);
     }
+
+    @PutMapping("/{userId}/person")
+    public Person updatePerson(@PathVariable("userId") Long userId, @RequestBody Person person){
+        System.out.println("Controller calling ==> updatePerson()");
+        User user = this.userService.getUser(userId);
+        person.setUser(user);
+        return this.personService.updatePerson(person.getPersonId(), person);
+    }
+    
 
 
 }
