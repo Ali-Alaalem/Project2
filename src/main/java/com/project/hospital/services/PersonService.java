@@ -3,6 +3,7 @@ package com.project.hospital.services;
 import com.project.hospital.exceptions.InformationExistException;
 import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.Person;
+import com.project.hospital.models.User;
 import com.project.hospital.repositorys.PersonRepository;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -67,13 +68,13 @@ public class PersonService {
         }
     }
 
-    public Person getPersonByUserId(Long userId){
+    public Person getPersonByUser(User user){
         System.out.println("Service is calling ==> getPersonByUser()");
-        Optional<Person> person = this.personRepository.findByUser(userId);
+        Optional<Person> person = this.personRepository.findByUser(user);
         if(person.isPresent()){
             return person.get();
         }else{
-            throw new InformationNotFoundException("User " + userId + " has no person details");
+            throw new InformationNotFoundException("User " + user.getId() + " has no person details");
         }
     }
 }

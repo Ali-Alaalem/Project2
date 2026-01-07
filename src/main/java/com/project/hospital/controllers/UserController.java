@@ -35,10 +35,14 @@ public class UserController {
 
     }
 
-//    @GetMapping("/login/{userId}/person")
-//    public Person getPerson(@PathVariable("userId") Long userId){
-//        System.out.println("Controller calling ==> getPerson()");
-//        User user = this.userService.getUser(userId);
-//        Person person = this.personService
-//    }
+    @GetMapping("/{userId}/person")
+    public Person getPerson(@PathVariable("userId") Long userId){
+        System.out.println("Controller calling ==> getPerson()");
+        User user = this.userService.getUser(userId);
+        return this.personService.getPersonByUser(user);
+    }
+
+
+
+
 }
