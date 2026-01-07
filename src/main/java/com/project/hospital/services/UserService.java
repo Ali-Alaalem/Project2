@@ -95,5 +95,16 @@ public class UserService {
         }
     }
 
+    public User deleteUser(Long userId){
+        System.out.println("Service calling ==> deleteUser()");
+        Optional<User> user = this.userRepository.findById(userId);
+        if(user.isPresent()){
+            this.userRepository.delete(user.get());
+            return user.get();
+        }else{
+            throw new InformationNotFoundException("No user with the id " + userId + "exists.");
+        }
+    }
+
 
 }
