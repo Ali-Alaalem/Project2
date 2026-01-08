@@ -44,7 +44,7 @@ public class Room {
 
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "treatment_type_id")
+    @JoinColumn(name = "treatment_type_id", unique = true)
     private TreatmentType roomTreatmentType;
 
     @Column
