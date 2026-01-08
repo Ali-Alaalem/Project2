@@ -50,7 +50,7 @@ public class User {
     @JsonIgnore
     private Set<Appointment> appointments = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "treatment_id")
     private TreatmentType userTreatmentType;
 

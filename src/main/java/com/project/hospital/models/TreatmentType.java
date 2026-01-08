@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -29,8 +30,8 @@ public class TreatmentType {
     @OneToOne(mappedBy = "roomTreatmentType",fetch = FetchType.LAZY)
     private Room room;
 
-    @OneToOne(mappedBy = "userTreatmentType",fetch = FetchType.LAZY)
-    private User user;
+    @OneToMany(mappedBy = "userTreatmentType",fetch = FetchType.LAZY)
+    private List<User> user;
 
     @Column
     @CreationTimestamp
