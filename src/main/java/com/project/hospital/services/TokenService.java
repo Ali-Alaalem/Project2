@@ -15,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -63,11 +64,11 @@ public class TokenService {
         <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:30px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;">
           <tr>
             <td>
-              <h1 style="color:#4F46E5; font-family:'Helvetica',Arial,sans-serif;">Welcome to Your App!</h1>
+              <h1 style="color:#4F46E5; font-family:'Helvetica',Arial,sans-serif;">Welcome to Triple A Hospital!</h1>
               <p style="font-size:16px; color:#333;">Hello,</p>
               <p style="font-size:16px; color:#333;">Thank you for registering. Please verify your email address to activate your account.</p>
               <a href="{link}" style="display:inline-block; padding:14px 25px; font-size:16px; font-weight:bold; color:#ffffff; background-color:#4F46E5; text-decoration:none; border-radius:8px;">Verify Email</a>
-              <p style="margin-top:20px; font-size:12px; color:#999;">&copy; 2026 Hospital Management System</p>
+              <p style="margin-top:20px; font-size:12px; color:#999;">&copy; 2026 Triple A Hospital Management System</p>
             </td>
           </tr>
         </table>
@@ -89,7 +90,7 @@ public class TokenService {
 
     public String verifyToken(String token){
         Optional<Token> userToken= tokenRepository.findByToken(token);
-        if(userToken != null){
+        if(userToken != null && userToken.get().getExpiryDate().isBefore(LocalDateTime.now())){
             User user=userToken.get().getUser();
             user.setIsVerified(true);
             userRepository.save(user);

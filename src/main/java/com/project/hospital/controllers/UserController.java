@@ -47,6 +47,11 @@ public class UserController {
        return userService.resetPasswordPage(token);
     }
 
+    @PostMapping("/password/reset/submit")
+    public ResponseEntity<String> resetPasswordSubmit(@RequestParam String token, @RequestParam String newPassword) {
+        userService.resetPassword(token, newPassword);
+        return ResponseEntity.ok("<h3>Password reset successfully!</h3>");
+    }
     @GetMapping("/{userId}/person")
     public Person getPerson(@PathVariable("userId") Long userId){
         System.out.println("Controller calling ==> getPerson()");

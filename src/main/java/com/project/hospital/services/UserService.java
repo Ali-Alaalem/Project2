@@ -73,6 +73,7 @@ public class UserService {
             User user=userRepository.save(objectUser);
             String token= UUID.randomUUID().toString();
             Token verifyToken= new Token();
+            verifyToken.setExpiryDate(LocalDateTime.now().plusHours(24));
             verifyToken.setToken(token);
             verifyToken.setUser(user);
             verifyToken.setExpiryDate(LocalDateTime.now().plusHours(24));
@@ -152,7 +153,7 @@ public class UserService {
             verifyToken.setUser(resetPassUser);
             verifyToken.setExpiryDate(LocalDateTime.now().plusHours(24));
             tokenRepository.save(verifyToken);
-            sendMail(user.getEmailAddress(), token);
+            this.sendMail(resetPassUser.getEmailAddress(), token);
         }
         else{
             throw new InformationExistException("User with email address " +resetPassUser.getEmailAddress() + "does not exist");
@@ -237,5 +238,15 @@ public class UserService {
 
         return ResponseEntity.ok().header("Content-Type", "text/html").body(html);
     }
+
+public void resetPassword(String token,String newPass){
+    Optional<Token> userToken= tokenRepository.findByToken(token);
+    if(userToken != null && userToken.get().getExpiryDate().isBefore(LocalDateTime.now())){
+        User user=userToken.get().getUser();
+        user.setPassword(newPass);
+        userRepository.save(user);
+        tokenRepository.delete(userToken.get());
+    }
+}
 
 }
