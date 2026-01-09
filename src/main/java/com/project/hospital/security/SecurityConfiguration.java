@@ -47,7 +47,8 @@ public class SecurityConfiguration {
                                 "/auth/users/login",
                                 "/auth/users/register",
                                 "/auth/roles",
-                                "/auth/permissions"
+                                "/auth/permissions",
+                                "/api/auth/verify"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );

@@ -91,7 +91,7 @@ public class TokenService {
         Optional<Token> userToken= tokenRepository.findByToken(token);
         if(userToken != null){
             User user=userToken.get().getUser();
-            user.setVerified(true);
+            user.setIsVerified(true);
             userRepository.save(user);
             tokenRepository.delete(userToken.get());
             return "User " + user.getEmailAddress() + " verified successfully!";

@@ -34,7 +34,7 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private boolean isVerified;
+    private Boolean isVerified=false;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
