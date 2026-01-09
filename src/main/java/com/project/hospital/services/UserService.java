@@ -60,6 +60,7 @@ public class UserService {
             objectUser.setPassword(passwordEncoder.encode(objectUser.getPassword()));
             Optional<Role> role=roleRepository.findByName("PATIENT");
             objectUser.setRole(role.get());
+            objectUser.setVerified(false);
             User user=userRepository.save(objectUser);
             String token= UUID.randomUUID().toString();
             Token verifyToken= new Token();
@@ -84,8 +85,12 @@ public class UserService {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             myUserDetails=(MyUserDetails) authentication.getPrincipal();
+            if(myUserDetails.getUser().isVerified()){
             final String JWT =jwtUtils.generateJwtToken(myUserDetails);
             return ResponseEntity.ok(new LoginResponse(JWT));
+            }else{
+                return ResponseEntity.ok(new LoginResponse("Your Account is not verified"));
+            }
         }catch (Exception e){
             return ResponseEntity.ok(new LoginResponse("Error :User name of password is incorrect"));
         }

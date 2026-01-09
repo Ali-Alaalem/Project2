@@ -2,6 +2,11 @@ package com.project.hospital.services;
 
 
 
+import com.project.hospital.exceptions.InformationNotFoundException;
+import com.project.hospital.models.Token;
+import com.project.hospital.models.User;
+import com.project.hospital.repositorys.TokenRepository;
+import com.project.hospital.repositorys.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,15 +15,26 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class TokenService {
+
     private final JavaMailSender mailSender;
+    private final TokenRepository tokenRepository;
+    private final UserRepository userRepository;
+
+
 
     @Value("${sender.email}")
     private String senderEmail;
-    public TokenService(JavaMailSender mailSender) {
+
+    public TokenService(JavaMailSender mailSender, TokenRepository tokenRepository, UserRepository userRepository) {
         this.mailSender = mailSender;
+        this.tokenRepository = tokenRepository;
+        this.userRepository = userRepository;
     }
+
 
     public void sendMail(String email, String token){
         String link = "http://localhost:8080/api/auth/verify?token=" + token;
@@ -70,4 +86,7 @@ public class TokenService {
             throw new RuntimeException(e);
         }
     }
+
+
+
 }
