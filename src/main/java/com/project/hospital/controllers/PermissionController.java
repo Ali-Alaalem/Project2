@@ -38,7 +38,7 @@ public class PermissionController {
         return permissionService.deletePermission(permissionId);
     }
 
-    @PostMapping("/{permissionId}")
+    @PutMapping("/{permissionId}")
     public Permission updatePermission(@PathVariable("permissionId") Long permissionId, @RequestBody Permission permission) {
         return permissionService.updatePermission(permissionId, permission);
     }

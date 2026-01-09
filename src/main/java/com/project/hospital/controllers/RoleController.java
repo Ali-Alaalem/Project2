@@ -44,7 +44,7 @@ public class RoleController {
         return roleService.updateRole(roleId, role);
     }
 
-    @PostMapping("/{roleId}/permissions")
+    @PutMapping("/{roleId}/permissions")
     public Role updateRolePermissions(@PathVariable("roleId") Long roleId, @RequestBody Set<Permission> permissions) {
         return roleService.updateRolePermissions(roleId, permissions);
     }

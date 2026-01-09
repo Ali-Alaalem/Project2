@@ -2,6 +2,7 @@ package com.project.hospital.repositorys;
 
 
 import com.project.hospital.models.Booking;
+import com.project.hospital.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
