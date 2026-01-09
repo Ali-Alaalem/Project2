@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Optional;
 
@@ -57,13 +58,15 @@ public class UserService {
     public User createUser(User objectUser){
         if(!userRepository.existsByEmailAddress(objectUser.getEmailAddress())){
             objectUser.setPassword(passwordEncoder.encode(objectUser.getPassword()));
-            Optional<Role> role=roleRepository.findByName("Patient");
+            Optional<Role> role=roleRepository.findByName("PATIENT");
+            objectUser.setIsVerified(false);
             objectUser.setRole(role.get());
             User user=userRepository.save(objectUser);
             String token= UUID.randomUUID().toString();
             Token verifyToken= new Token();
             verifyToken.setToken(token);
             verifyToken.setUser(user);
+            verifyToken.setExpiryDate(LocalDateTime.now().plusHours(24));
             tokenRepository.save(verifyToken);
             tokenService.sendMail(user.getEmailAddress(), token);
 
@@ -82,8 +85,12 @@ public class UserService {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             myUserDetails=(MyUserDetails) authentication.getPrincipal();
+            if(myUserDetails.getUser().getIsVerified()){
             final String JWT =jwtUtils.generateJwtToken(myUserDetails);
             return ResponseEntity.ok(new LoginResponse(JWT));
+            }else{
+                return ResponseEntity.ok(new LoginResponse("Your Account is not verified"));
+            }
         }catch (Exception e){
             return ResponseEntity.ok(new LoginResponse("Error :User name of password is incorrect"));
         }
