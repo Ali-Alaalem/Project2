@@ -215,6 +215,27 @@ public class UserService {
     }
 
 
+    public ResponseEntity<String> resetPasswordPage(String token){
+        String html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Reset Password</title>
+    </head>
+    <body style="text-align:center; margin-top:50px;">
+      <h2>Reset Your Password</h2>
+      <form action="/auth/users/password/reset/submit" method="post">
+        <input type="hidden" name="token" value="%s" />
+        <input type="password" name="newPassword" placeholder="New Password" required />
+        <br><br>
+        <button type="submit">Reset Password</button>
+      </form>
+    </body>
+    </html>
+    """.formatted(token);
 
+        return ResponseEntity.ok().header("Content-Type", "text/html").body(html);
+    }
 
 }
