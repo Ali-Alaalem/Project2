@@ -14,8 +14,13 @@ import com.project.hospital.repositorys.TokenRepository;
 import com.project.hospital.repositorys.UserRepository;
 import com.project.hospital.security.JWTUtils;
 import com.project.hospital.security.MyUserDetails;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,9 +43,12 @@ public class UserService {
     private RoleRepository roleRepository;
     private TokenRepository tokenRepository;
     private TokenService tokenService;
+    private final JavaMailSender mailSender;
+    @Value("${sender.email}")
+    private String senderEmail;
 
-    public UserService( TokenService tokenService,TokenRepository tokenRepository,UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder,
-                       JWTUtils jwtUtils, @Lazy AuthenticationManager authenticationManager, @Lazy MyUserDetails myUserDetails,RoleRepository roleRepository){
+    public UserService(TokenService tokenService, TokenRepository tokenRepository, UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder,
+                       JWTUtils jwtUtils, @Lazy AuthenticationManager authenticationManager, @Lazy MyUserDetails myUserDetails, RoleRepository roleRepository, JavaMailSender mailSender){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
         this.jwtUtils=jwtUtils;
@@ -49,6 +57,7 @@ public class UserService {
         this.roleRepository=roleRepository;
         this.tokenRepository=tokenRepository;
         this.tokenService=tokenService;
+        this.mailSender = mailSender;
     }
 
     public User findUserByEmailAddress(String email) {
@@ -133,6 +142,9 @@ public class UserService {
             throw new InformationNotFoundException("No user with the id " + userId + "exists.");
         }
     }
+
+
+
 
 
 }

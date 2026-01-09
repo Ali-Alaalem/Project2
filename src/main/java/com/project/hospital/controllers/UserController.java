@@ -35,6 +35,14 @@ public class UserController {
 
     }
 
+    @PostMapping("/password/reset")
+    public void resetPasswordEmailSender(@RequestBody User user){
+        System.out.println("Calling resetPasswordEmailSender ==>");
+        userService.resetPasswordEmailSender(user);
+    }
+
+
+
     @GetMapping("/{userId}/person")
     public Person getPerson(@PathVariable("userId") Long userId){
         System.out.println("Controller calling ==> getPerson()");
