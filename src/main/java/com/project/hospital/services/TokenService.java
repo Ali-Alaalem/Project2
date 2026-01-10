@@ -90,7 +90,8 @@ public class TokenService {
 
     public String verifyToken(String token){
         Optional<Token> userToken= tokenRepository.findByToken(token);
-        if(userToken != null && userToken.get().getExpiryDate().isBefore(LocalDateTime.now())){
+        if (userToken.isPresent() && userToken.get().getExpiryDate().isAfter(LocalDateTime.now()))
+        {
             User user=userToken.get().getUser();
             user.setIsVerified(true);
             userRepository.save(user);

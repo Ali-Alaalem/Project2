@@ -51,7 +51,6 @@ public class SecurityConfiguration {
                                 "/api/auth/verify",
                                 "/auth/users/password/reset",
                                 "/auth/users/password/reset/page",
-                                "/auth/users/password/reset/page",
                                 "/auth/users/password/reset/submit"
                         ).permitAll()
                         .anyRequest().authenticated()

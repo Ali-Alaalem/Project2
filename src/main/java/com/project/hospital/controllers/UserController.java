@@ -41,7 +41,7 @@ public class UserController {
         userService.resetPasswordEmailSender(user);
     }
 
-    @PostMapping("/password/reset/page")
+    @GetMapping("/password/reset/page")
     public ResponseEntity<String> resetPasswordPage(@RequestParam("token") String token){
         System.out.println("Calling resetPasswordPage ==>");
        return userService.resetPasswordPage(token);
