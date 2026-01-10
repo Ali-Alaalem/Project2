@@ -3,10 +3,7 @@ package com.project.hospital.services;
 
 import com.project.hospital.exceptions.InformationExistException;
 import com.project.hospital.exceptions.InformationNotFoundException;
-import com.project.hospital.models.Permission;
-import com.project.hospital.models.Role;
-import com.project.hospital.models.Token;
-import com.project.hospital.models.User;
+import com.project.hospital.models.*;
 import com.project.hospital.models.request.LoginRequest;
 import com.project.hospital.models.response.LoginResponse;
 import com.project.hospital.repositorys.RoleRepository;
@@ -248,6 +245,19 @@ public void resetPassword(String token,String newPass){
         userRepository.save(user);
         tokenRepository.delete(userToken.get());
     }
+}
+
+public User ChangePassword(Authentication authentication,PasswordChangeRequest request) {
+    String currentLoggedUserEmail = authentication.getName();
+    User userLoggedIn=userRepository.findUserByEmailAddress(currentLoggedUserEmail);
+
+     if( passwordEncoder.matches(request.getCurrentPassword(),userLoggedIn.getPassword())){
+         userLoggedIn.setPassword(passwordEncoder.encode(request.getNewPassword()));
+         return userRepository.save(userLoggedIn);
+    }else {
+         throw new InformationExistException("The Current password is wrong");
+     }
+
 }
 
 }

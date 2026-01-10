@@ -1,5 +1,6 @@
 package com.project.hospital.controllers;
 
+import com.project.hospital.models.PasswordChangeRequest;
 import com.project.hospital.models.Person;
 import com.project.hospital.models.User;
 import com.project.hospital.models.request.LoginRequest;
@@ -7,6 +8,7 @@ import com.project.hospital.services.PersonService;
 import com.project.hospital.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -53,10 +55,10 @@ public class UserController {
         return ResponseEntity.ok("<h3>Password reset successfully!</h3>");
     }
 
-    @PutMapping("/{userId}/change/password")
-    public Person ChangePassword(@PathVariable("userId") Long userId, @RequestBody User user){
+    @PutMapping("/change/password")
+    public User ChangePassword(Authentication authentication, @RequestBody PasswordChangeRequest request){
         System.out.println("Controller calling ==> ChangePassword()");
-        return userService.ChangePassword(userId,user);
+        return userService.ChangePassword(authentication,request);
     }
 
 
