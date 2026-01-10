@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-
     private MyUserDetailsService myUserDetailsService;
     private JwtRequestFilter jwtRequestFilter;
 
@@ -47,21 +46,17 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/auth/users/login",
                                 "/auth/users/register",
-                                "/api/auth/verify"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                );
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                                "/api/auth/verify",
                                 "/auth/roles",
                                 "/auth/permissions",
-                                "/api/auth/verify",
                                 "/auth/users/password/reset",
                                 "/auth/users/password/reset/page",
                                 "/auth/users/password/reset/submit"
                         ).permitAll()
                         .anyRequest().authenticated()
-                );
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -70,5 +65,4 @@ public class SecurityConfiguration {
             AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
 }

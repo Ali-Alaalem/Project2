@@ -2,11 +2,14 @@ package com.project.hospital.seeders;
 
 import com.project.hospital.models.Permission;
 import com.project.hospital.models.Role;
+import com.project.hospital.models.User;
 import com.project.hospital.repositorys.PermissionRepository;
 import com.project.hospital.repositorys.RoleRepository;
+import com.project.hospital.repositorys.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,8 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private final PermissionRepository permissionRepository;
     private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -27,8 +32,37 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         seedPermissions();
         seedRoles();
+        seedAdminUser();
 
         log.info("Database seeding completed!");
+    }
+
+    private void seedAdminUser() {
+        log.info("Seeding admin user...");
+
+        String adminEmail = "admin@hospital.com";
+        String adminPassword = "admin123";
+
+        if (userRepository.existsByEmailAddress(adminEmail)) {
+            log.info("Admin user already exists. Skipping admin user seeding.");
+            return;
+        }
+
+        Role adminRole = roleRepository.findByName("ADMIN").orElse(null);
+        if (adminRole == null) {
+            log.warn("ADMIN role not found. Skipping admin user creation.");
+            return;
+        }
+
+        User admin = new User();
+        admin.setFullName("Admin");
+        admin.setEmailAddress(adminEmail);
+        admin.setPassword(passwordEncoder.encode(adminPassword));
+        admin.setIsVerified(true);
+        admin.setRole(adminRole);
+
+        userRepository.save(admin);
+        log.info("Created default admin user: {} (password: {})", adminEmail, adminPassword);
     }
 
     private void seedPermissions() {
