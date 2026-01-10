@@ -45,6 +45,7 @@ public class Room {
     private Set<Appointment> appointments;
 
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "treatment_type_id", unique = true)
     private TreatmentType roomTreatmentType;
