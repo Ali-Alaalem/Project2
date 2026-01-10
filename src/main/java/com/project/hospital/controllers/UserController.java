@@ -1,5 +1,6 @@
 package com.project.hospital.controllers;
 
+import com.project.hospital.models.PasswordChangeRequest;
 import com.project.hospital.models.Person;
 import com.project.hospital.models.User;
 import com.project.hospital.models.request.LoginRequest;
@@ -8,6 +9,7 @@ import com.project.hospital.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,6 +36,31 @@ public class UserController {
 
     }
 
+    @PostMapping("/password/reset")
+    public void resetPasswordEmailSender(@RequestBody User user){
+        System.out.println("Calling resetPasswordEmailSender ==>");
+        userService.resetPasswordEmailSender(user);
+    }
+
+    @GetMapping("/password/reset/page")
+    public ResponseEntity<String> resetPasswordPage(@RequestParam("token") String token){
+        System.out.println("Calling resetPasswordPage ==>");
+       return userService.resetPasswordPage(token);
+    }
+
+    @PostMapping("/password/reset/submit")
+    public ResponseEntity<String> resetPasswordSubmit(@RequestParam String token, @RequestParam String newPassword) {
+        userService.resetPassword(token, newPassword);
+        return ResponseEntity.ok("<h3>Password reset successfully!</h3>");
+    }
+
+    @PutMapping("/change/password")
+    public User ChangePassword(Authentication authentication, @RequestBody PasswordChangeRequest request){
+        System.out.println("Controller calling ==> ChangePassword()");
+        return userService.ChangePassword(authentication,request);
+    }
+
+
     @GetMapping("/{userId}/person")
     @PreAuthorize("hasAuthority('user:view')")
     public Person getPerson(@PathVariable("userId") Long userId){
@@ -59,6 +86,7 @@ public class UserController {
         person.setUser(user);
         return this.personService.updatePerson(person.getPersonId(), person);
     }
+
 
     @DeleteMapping("/{userId}/person")
     @PreAuthorize("hasAuthority('user:delete')")

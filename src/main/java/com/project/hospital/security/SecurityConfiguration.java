@@ -52,6 +52,16 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 );
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                                "/auth/roles",
+                                "/auth/permissions",
+                                "/api/auth/verify",
+                                "/auth/users/password/reset",
+                                "/auth/users/password/reset/page",
+                                "/auth/users/password/reset/submit"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                );
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
