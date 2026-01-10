@@ -30,4 +30,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     // Get appointments by doctor ID with role verification
     @Query("SELECT a FROM Appointment a JOIN a.doctor d JOIN d.role r WHERE d.id = :doctorId AND r.name = 'DOCTOR'")
     List<Appointment> findByDoctorIdWithRoleCheck(@Param("doctorId") Long doctorId);
+
+    @Query("SELECT a FROM Appointment a JOIN FETCH a.doctor d LEFT JOIN FETCH a.booking b WHERE a.room.id = :roomId AND a.startTime BETWEEN :start AND :end ORDER BY a.startTime")
+    List<Appointment> findRoomAppointmentsWithDoctorAndBooking(
+            @Param("roomId") Long roomId,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
 }

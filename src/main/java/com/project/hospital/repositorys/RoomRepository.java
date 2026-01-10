@@ -11,4 +11,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     boolean existsByRoomTreatmentType(TreatmentType treatmentType);
 
     Optional<Room> findByRoomNumber(String roomNumber);
+
+    Optional<Room> findByRoomTreatmentType(TreatmentType treatmentType);
 }

@@ -3,9 +3,12 @@ package com.project.hospital.services;
 import com.project.hospital.exceptions.InformationExistException;
 import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.Appointment;
+import com.project.hospital.models.Booking;
 import com.project.hospital.models.User;
 import com.project.hospital.repositorys.AppointmentRepository;
+import com.project.hospital.repositorys.BookingRepository;
 import com.project.hospital.repositorys.UserRepository;
+import com.project.hospital.models.response.BookAppointmentResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,10 +19,12 @@ public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, UserRepository userRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, UserRepository userRepository, BookingRepository bookingRepository) {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     public Appointment createAppointment(Appointment appointment) {
@@ -93,6 +98,10 @@ public class AppointmentService {
         return appointmentRepository.findByRoomId(roomId);
     }
 
+    public List<Appointment> getRoomAppointmentsForAvailability(Long roomId, LocalDateTime start, LocalDateTime end) {
+        return appointmentRepository.findRoomAppointmentsWithDoctorAndBooking(roomId, start, end);
+    }
+
     // READ - by booking
     public List<Appointment> getAppointmentsByBookingId(Long bookingId) {
         return appointmentRepository.findByBookingId(bookingId);
@@ -144,6 +153,42 @@ public class AppointmentService {
         );
         appointmentRepository.delete(existingAppointment);
         return existingAppointment;
+    }
+
+    public BookAppointmentResponse bookAppointment(Long appointmentId, String patientEmail) {
+        Appointment appointment = getAppointmentById(appointmentId);
+
+        if (appointment.getBooking() != null) {
+            throw new InformationExistException("Appointment is already booked");
+        }
+
+        if (appointment.getStartTime() != null && appointment.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Cannot book an appointment in the past");
+        }
+
+        User patient = userRepository.findUserByEmailAddress(patientEmail);
+        if (patient == null) {
+            throw new InformationNotFoundException("Patient not found");
+        }
+        if (patient.getRole() == null || !"PATIENT".equals(patient.getRole().getName())) {
+            throw new IllegalArgumentException("Only PATIENT users can book appointments");
+        }
+
+        Booking booking = new Booking();
+        booking.setBookedAt(LocalDateTime.now());
+        booking.setPatient(patient);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        appointment.setBooking(savedBooking);
+        appointmentRepository.save(appointment);
+
+        return new BookAppointmentResponse(
+                savedBooking.getId(),
+                appointment.getId(),
+                savedBooking.getBookedAt(),
+                appointment.getStartTime(),
+                appointment.getEndTime()
+        );
     }
 
     private void validateAppointment(Appointment appointment) {

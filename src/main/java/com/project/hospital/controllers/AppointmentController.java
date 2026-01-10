@@ -2,9 +2,12 @@ package com.project.hospital.controllers;
 
 
 import com.project.hospital.models.Appointment;
+import com.project.hospital.models.request.BookAppointmentRequest;
+import com.project.hospital.models.response.BookAppointmentResponse;
 import com.project.hospital.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,5 +52,11 @@ public class AppointmentController {
     @PreAuthorize("hasAuthority('appointment:update')")
     public Appointment updateAppointmentById(@PathVariable("appointmentId") Long appointmentId, @RequestBody Appointment appointment) {
         return appointmentService.updateAppointment(appointmentId, appointment);
+    }
+
+    @PostMapping("/book")
+    @PreAuthorize("hasAuthority('booking:create')")
+    public BookAppointmentResponse bookAppointment(Authentication authentication, @RequestBody BookAppointmentRequest request) {
+        return appointmentService.bookAppointment(request.getAppointmentId(), authentication.getName());
     }
 }

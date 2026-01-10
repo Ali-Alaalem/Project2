@@ -3,6 +3,7 @@ package com.project.hospital.controllers;
 import com.project.hospital.models.PasswordChangeRequest;
 import com.project.hospital.models.Person;
 import com.project.hospital.models.User;
+import com.project.hospital.models.request.CreateDoctorRequest;
 import com.project.hospital.models.request.LoginRequest;
 import com.project.hospital.services.PersonService;
 import com.project.hospital.services.UserService;
@@ -27,6 +28,12 @@ public class UserController {
     public User createUser(@RequestBody User objectUser){
         System.out.println("Calling create user");
         return userService.createUser(objectUser);
+    }
+
+    @PostMapping("/doctors")
+    @PreAuthorize("hasAuthority('user:create')")
+    public User createDoctor(@RequestBody CreateDoctorRequest request) {
+        return userService.createDoctor(request);
     }
 
     @PostMapping("/login")
