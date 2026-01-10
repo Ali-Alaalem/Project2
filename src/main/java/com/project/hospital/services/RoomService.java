@@ -24,7 +24,7 @@ public class RoomService {
         if (room.getRoomTreatmentType() == null)
             throw new IllegalArgumentException("Room treatment type is required");
 
-        if (roomRepository.existsByNumber(room.getRoomNumber())) {
+        if (roomRepository.existsByRoomNumber(room.getRoomNumber())) {
             throw new InformationExistException("Room number already exists");
         }
 
@@ -73,7 +73,7 @@ public class RoomService {
         }
 
         if (!existingRoom.getRoomNumber().equals(roomUpdates.getRoomNumber())) {
-            if (roomRepository.existsByNumber(roomUpdates.getRoomNumber())) {
+            if (roomRepository.existsByRoomNumber(roomUpdates.getRoomNumber())) {
                 throw new InformationExistException("Room number already exists");
             }
         }
