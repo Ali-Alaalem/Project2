@@ -52,6 +52,14 @@ public class UserController {
         userService.resetPassword(token, newPassword);
         return ResponseEntity.ok("<h3>Password reset successfully!</h3>");
     }
+
+    @PutMapping("/{userId}/change/password")
+    public Person ChangePassword(@PathVariable("userId") Long userId, @RequestBody User user){
+        System.out.println("Controller calling ==> ChangePassword()");
+        return userService.ChangePassword(userId,user);
+    }
+
+
     @GetMapping("/{userId}/person")
     public Person getPerson(@PathVariable("userId") Long userId){
         System.out.println("Controller calling ==> getPerson()");
@@ -74,6 +82,7 @@ public class UserController {
         person.setUser(user);
         return this.personService.updatePerson(person.getPersonId(), person);
     }
+
 
     @DeleteMapping("/{userId}/person")
     public Person deletePerson(@PathVariable("userId") Long userId){
