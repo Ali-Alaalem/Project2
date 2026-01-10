@@ -4,9 +4,13 @@ package com.project.hospital.services;
 import com.project.hospital.exceptions.InformationExistException;
 import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.*;
+import com.project.hospital.models.request.CreateDoctorRequest;
 import com.project.hospital.models.request.LoginRequest;
 import com.project.hospital.models.response.LoginResponse;
+import com.project.hospital.repositorys.AppointmentRepository;
 import com.project.hospital.repositorys.RoleRepository;
+import com.project.hospital.repositorys.RoomRepository;
+import com.project.hospital.repositorys.TreatmentTypeRepository;
 import com.project.hospital.repositorys.TokenRepository;
 import com.project.hospital.repositorys.UserRepository;
 import com.project.hospital.security.JWTUtils;
@@ -25,7 +29,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.Optional;
 
@@ -41,11 +47,15 @@ public class UserService {
     private TokenRepository tokenRepository;
     private TokenService tokenService;
     private final JavaMailSender mailSender;
+    private final TreatmentTypeRepository treatmentTypeRepository;
+    private final RoomRepository roomRepository;
+    private final AppointmentRepository appointmentRepository;
     @Value("${sender.email}")
     private String senderEmail;
 
     public UserService(TokenService tokenService, TokenRepository tokenRepository, UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder,
-                       JWTUtils jwtUtils, @Lazy AuthenticationManager authenticationManager, @Lazy MyUserDetails myUserDetails, RoleRepository roleRepository, JavaMailSender mailSender){
+                       JWTUtils jwtUtils, @Lazy AuthenticationManager authenticationManager, @Lazy MyUserDetails myUserDetails, RoleRepository roleRepository, JavaMailSender mailSender,
+                       TreatmentTypeRepository treatmentTypeRepository, RoomRepository roomRepository, AppointmentRepository appointmentRepository){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
         this.jwtUtils=jwtUtils;
@@ -55,6 +65,9 @@ public class UserService {
         this.tokenRepository=tokenRepository;
         this.tokenService=tokenService;
         this.mailSender = mailSender;
+        this.treatmentTypeRepository = treatmentTypeRepository;
+        this.roomRepository = roomRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     public User findUserByEmailAddress(String email) {
@@ -79,6 +92,109 @@ public class UserService {
 
             return user;
         }else{ throw new InformationExistException("User with email address " +objectUser.getEmailAddress() + "already exist"); }
+    }
+
+    public User createDoctor(CreateDoctorRequest request) {
+        if (request.getEmailAddress() == null || request.getPassword() == null) {
+            throw new IllegalArgumentException("Email and password are required");
+        }
+
+        if (userRepository.existsByEmailAddress(request.getEmailAddress())) {
+            throw new InformationExistException("User with email address " + request.getEmailAddress() + "already exist");
+        }
+
+        Role doctorRole = roleRepository.findByName("DOCTOR").orElseThrow(
+                () -> new InformationNotFoundException("DOCTOR role not found")
+        );
+
+        TreatmentType treatmentType = treatmentTypeRepository.findById(request.getTreatmentTypeId()).orElseThrow(
+                () -> new InformationNotFoundException("Treatment type does not exist")
+        );
+
+        Room room = roomRepository.findByRoomTreatmentType(treatmentType).orElseThrow(
+                () -> new InformationNotFoundException("No room found for this treatment type")
+        );
+
+        User doctor = new User();
+        doctor.setFullName(request.getFullName());
+        doctor.setEmailAddress(request.getEmailAddress());
+        doctor.setPassword(passwordEncoder.encode(request.getPassword()));
+        doctor.setIsVerified(true);
+        doctor.setRole(doctorRole);
+        doctor.setUserTreatmentType(treatmentType);
+        doctor.setWorkDaysAndHours(request.getWorkDaysAndHours());
+
+        User savedDoctor = userRepository.save(doctor);
+
+        createDoctorAppointmentsForNextMonth(savedDoctor, room);
+
+        return savedDoctor;
+    }
+
+    private void createDoctorAppointmentsForNextMonth(User doctor, Room room) {
+        HashMap<String, HashMap<String, LocalTime>> schedule = doctor.getWorkDaysAndHours();
+        if (schedule == null || schedule.isEmpty()) {
+            return;
+        }
+
+        HashMap<String, HashMap<String, LocalTime>> normalized = new HashMap<>();
+        for (Map.Entry<String, HashMap<String, LocalTime>> entry : schedule.entrySet()) {
+            if (entry.getKey() != null && entry.getValue() != null) {
+                normalized.put(entry.getKey().toLowerCase(), entry.getValue());
+            }
+        }
+
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = today.plusDays(30);
+
+        List<Appointment> toCreate = new ArrayList<>();
+
+        for (LocalDate date = today; date.isBefore(endDate); date = date.plusDays(1)) {
+            String dayKey = date.getDayOfWeek().name().toLowerCase();
+            HashMap<String, LocalTime> hours = normalized.get(dayKey);
+            if (hours == null) {
+                continue;
+            }
+
+            LocalTime from = hours.get("from");
+            LocalTime to = hours.get("to");
+            if (from == null || to == null || !from.isBefore(to)) {
+                continue;
+            }
+
+            LocalDateTime start = LocalDateTime.of(date, from);
+            LocalDateTime end = LocalDateTime.of(date, to);
+
+            while (start.plusMinutes(30).compareTo(end) <= 0) {
+                LocalDateTime slotEnd = start.plusMinutes(30);
+
+                boolean doctorConflict = appointmentRepository.existsByDoctorIdAndStartTimeBetween(
+                        doctor.getId(),
+                        start,
+                        slotEnd.minusNanos(1)
+                );
+                boolean roomConflict = appointmentRepository.existsByRoomIdAndStartTimeBetween(
+                        room.getId(),
+                        start,
+                        slotEnd.minusNanos(1)
+                );
+
+                if (!doctorConflict && !roomConflict) {
+                    Appointment appointment = new Appointment();
+                    appointment.setDoctor(doctor);
+                    appointment.setRoom(room);
+                    appointment.setStartTime(start);
+                    appointment.setEndTime(slotEnd);
+                    toCreate.add(appointment);
+                }
+
+                start = slotEnd;
+            }
+        }
+
+        if (!toCreate.isEmpty()) {
+            appointmentRepository.saveAll(toCreate);
+        }
     }
 
 

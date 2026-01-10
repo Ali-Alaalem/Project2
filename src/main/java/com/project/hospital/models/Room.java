@@ -1,6 +1,7 @@
 package com.project.hospital.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.hospital.converters.WorkDaysAndHoursConverter;
 import lombok.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,7 +35,8 @@ public class Room {
     // "from":3am,
     // "to":"4pm"
     // >;
-    @Column
+    @Convert(converter = WorkDaysAndHoursConverter.class)
+    @Column(columnDefinition = "text")
     private HashMap<String, HashMap<String, LocalTime>> workDaysAndHours;
 
 
