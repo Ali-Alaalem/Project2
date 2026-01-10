@@ -8,10 +8,9 @@ import com.project.hospital.services.PersonService;
 import com.project.hospital.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth/users")
@@ -63,6 +62,7 @@ public class UserController {
 
 
     @GetMapping("/{userId}/person")
+    @PreAuthorize("hasAuthority('user:view')")
     public Person getPerson(@PathVariable("userId") Long userId){
         System.out.println("Controller calling ==> getPerson()");
         User user = this.userService.getUser(userId);
@@ -70,6 +70,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/person")
+    @PreAuthorize("hasAuthority('user:update')")
     public Person createPerson(@PathVariable("userId") Long userId, @RequestBody Person person){
         System.out.println("Controller calling ==> createPerson()");
         User user = this.userService.getUser(userId);
@@ -78,6 +79,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/person")
+    @PreAuthorize("hasAuthority('user:update')")
     public Person updatePerson(@PathVariable("userId") Long userId, @RequestBody Person person){
         System.out.println("Controller calling ==> updatePerson()");
         User user = this.userService.getUser(userId);
@@ -87,6 +89,7 @@ public class UserController {
 
 
     @DeleteMapping("/{userId}/person")
+    @PreAuthorize("hasAuthority('user:delete')")
     public Person deletePerson(@PathVariable("userId") Long userId){
         return this.personService.deletePerson(
                     this.personService.getPersonByUser(

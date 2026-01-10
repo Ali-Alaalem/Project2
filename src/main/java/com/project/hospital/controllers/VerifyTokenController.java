@@ -1,7 +1,5 @@
 package com.project.hospital.controllers;
 
-import com.project.hospital.models.Person;
-import com.project.hospital.models.Token;
 import com.project.hospital.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

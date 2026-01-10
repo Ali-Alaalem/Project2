@@ -21,15 +21,16 @@ public class SecurityConfiguration {
 
 
     private MyUserDetailsService myUserDetailsService;
+    private JwtRequestFilter jwtRequestFilter;
 
     @Autowired
     public void setMyUserDetailsService(MyUserDetailsService myUserDetailsService) {
         this.myUserDetailsService = myUserDetailsService;
     }
 
-    @Bean
-    public JwtRequestFilter authenticationJwtTokenFilter() {
-        return new JwtRequestFilter();
+    @Autowired
+    public void setJwtRequestFilter(JwtRequestFilter jwtRequestFilter) {
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Bean
@@ -44,9 +45,13 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/users",
                                 "/auth/users/login",
                                 "/auth/users/register",
+                                "/api/auth/verify"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                );
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
                                 "/auth/roles",
                                 "/auth/permissions",
                                 "/api/auth/verify",
