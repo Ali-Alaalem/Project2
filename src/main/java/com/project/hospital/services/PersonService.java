@@ -5,6 +5,7 @@ import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.Person;
 import com.project.hospital.models.User;
 import com.project.hospital.repositorys.PersonRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class PersonService {
     private PersonRepository personRepository;
 
+    @Autowired
     public void setPersonRepository(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
