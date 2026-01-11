@@ -24,6 +24,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Autowired
+    public void setPersonService(PersonService personService){
+        this.personService = personService;
+    }
+
     @PostMapping("/register")
     public User createUser(@RequestBody User objectUser){
         System.out.println("Calling create user");

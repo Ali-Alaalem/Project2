@@ -1,6 +1,7 @@
 package com.project.hospital.seeders;
 
 import com.project.hospital.models.Permission;
+import com.project.hospital.models.Person;
 import com.project.hospital.models.Role;
 import com.project.hospital.models.User;
 import com.project.hospital.repositorys.PermissionRepository;
@@ -55,12 +56,13 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
 
         User admin = new User();
+        Person person = new Person();
         admin.setFullName("Admin");
         admin.setEmailAddress(adminEmail);
         admin.setPassword(passwordEncoder.encode(adminPassword));
         admin.setIsVerified(true);
         admin.setRole(adminRole);
-
+        admin.setPerson(person);
         userRepository.save(admin);
         log.info("Created default admin user: {} (password: {})", adminEmail, adminPassword);
     }

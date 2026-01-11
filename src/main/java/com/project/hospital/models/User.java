@@ -72,7 +72,7 @@ public class User {
     private LocalDateTime updatedDate;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL )
     @JoinColumn(name = "id", referencedColumnName = "person_id")
     private Person person;
 
