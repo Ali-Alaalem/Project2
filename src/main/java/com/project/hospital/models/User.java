@@ -56,6 +56,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "treatment_id")
+    @JsonIgnore
     private TreatmentType userTreatmentType;
 
     @OneToMany(mappedBy = "patient")
