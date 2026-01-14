@@ -16,6 +16,13 @@ It supports multiple user roles **Admin**, **Doctor**, and **Patient** with secu
 - **Jackson** for JSON processing
 - **Spring Boot Mail** for email services
 
+## General Approach
+
+The project was developed using a clean, layered architecture following the **Controller → Service → Repository → Entity** pattern. This structure ensures clear separation of concerns, improves maintainability, and makes the codebase easier to extend and test. The domain models were designed first to reflect realistic hospital workflows, after which the core authentication and authorization mechanisms were implemented before building the remaining services and controllers incrementally.
+
+Security was a primary focus of the system. A custom **JWT-based authentication** mechanism was implemented using Spring Security, including token generation, validation, and a request filter to secure protected endpoints. Role-based access control (RBAC) was designed dynamically, with roles and permissions stored in the database and enforced using method-level security (`@PreAuthorize`). The overall approach emphasized clean code, strong security practices, and adherence to Spring Boot best practices while building hospital management backend.
+
+
 # API Endpoints
 
 | Method | Endpoint | Description | Access Role |
