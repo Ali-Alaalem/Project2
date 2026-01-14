@@ -28,11 +28,22 @@ The main challenges were implementing a dynamic role-based access control (RBAC)
 
 ## User Stories:
 #### Admin
-- As an Admin, I want to view, create, update, and delete non-patient accounts(users)
-- As an Admin, I want to view, create, update, and delete rooms
-- As an Admin, I want to view, create, update, and delete treatment types
-- As an Admin, I want to link, unlink users with treatment types
-- As an Admin, I want to link, unlink rooms with treatment types
+- As an Admin, I want to view non-patient accounts(users)
+- As an Admin, I want to create non-patient accounts(users)
+- As an Admin, I want to update non-patient accounts(users)
+- As an Admin, I want to delete non-patient accounts(users)
+- As an Admin, I want to view rooms
+- As an Admin, I want to create rooms
+- As an Admin, I want to update rooms
+- As an Admin, I want to delete rooms
+- As an Admin, I want to view treatment types
+- As an Admin, I want to create treatment types
+- As an Admin, I want to update treatment types
+- As an Admin, I want to delete treatment types
+- As an Admin, I want to link users with treatment types
+- As an Admin, I want to unlink users with treatment types
+- As an Admin, I want to link rooms with treatment types
+- As an Admin, I want to unlink rooms with treatment types
 #### Doctor
 - As a Doctor, I want to view booked appointments
 - As a Doctor, I want to cancel appointments
@@ -40,8 +51,8 @@ The main challenges were implementing a dynamic role-based access control (RBAC)
 - As a Patient, I want to view available appointments
 - As a Patient, I want to book an appointment
 - As a Patient, I want to view booked appointments
-- As a Patient, I want to cancel booked appointment
-- As a Patient, I want to replace booked appointment
+- As a Patient, I want to cancel a booked appointment
+- As a Patient, I want to update a booked appointment
 #### Logged in user
 - As a logged in user, I want to view my profile
 - As a logged in user, I want to reset my password
