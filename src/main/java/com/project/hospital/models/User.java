@@ -2,6 +2,7 @@ package com.project.hospital.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.hospital.converters.WorkDaysAndHoursConverter;
 import lombok.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,6 +35,8 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    private Boolean isVerified=false;
+
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
@@ -42,7 +45,8 @@ public class User {
     // "from":3am,
     // "to":"4pm"
     // >;
-    @Column
+    @Convert(converter = WorkDaysAndHoursConverter.class)
+    @Column(columnDefinition = "text")
     private HashMap<String, HashMap<String, LocalTime>> workDaysAndHours = new HashMap<>();
 
 
@@ -50,8 +54,9 @@ public class User {
     @JsonIgnore
     private Set<Appointment> appointments = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "treatment_id")
+    @JsonIgnore
     private TreatmentType userTreatmentType;
 
     @OneToMany(mappedBy = "patient")
@@ -68,8 +73,8 @@ public class User {
     private LocalDateTime updatedDate;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL )
+    @JoinColumn(name = "id", referencedColumnName = "person_id")
     private Person person;
 
 

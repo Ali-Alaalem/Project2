@@ -65,6 +65,6 @@ public class Person {
     }
 
     @JsonIgnore
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "person", fetch = FetchType.LAZY)
     private User user;
 }

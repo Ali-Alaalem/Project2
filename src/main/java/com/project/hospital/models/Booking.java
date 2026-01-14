@@ -1,12 +1,12 @@
 package com.project.hospital.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -28,10 +28,12 @@ public class Booking {
 
 
     @OneToOne(mappedBy = "booking")
+    @JsonIgnore
     private Appointment appointment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
+    @JsonIgnore
     private User patient;
 
 

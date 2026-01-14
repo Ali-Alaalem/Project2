@@ -1,4 +1,31 @@
 # Project2
+## Hospital Management System
+
+A backend RESTFUL API designed to manage hospital operations efficiently.The system handles user authentication, role-based access control, and core hospital workflows such as managing doctors, patients, appointments, bookings, rooms,etc...
+
+It supports multiple user roles **Admin**, **Doctor**, and **Patient** with secure access and clear separation of responsibilities.
+
+## Tools & Technologies
+
+- **Java 17**
+- **Spring Boot (MVC, Security, Data JPA)**
+- **JWT (JSON Web Tokens)** for authentication and authorization
+- **PostgreSQL** with **Hibernate (JPA)**
+- **Maven** for build and dependency management
+- **Lombok** to reduce boilerplate code
+- **Jackson** for JSON processing
+- **Spring Boot Mail** for email services
+
+## General Approach
+
+The project was developed using a clean, layered architecture following the **Controller → Service → Repository → Entity** pattern. This structure ensures clear separation of concerns, improves maintainability, and makes the codebase easier to extend and test. The domain models were designed first to reflect realistic hospital workflows, after which the core authentication and authorization mechanisms were implemented before building the remaining services and controllers incrementally.
+
+Security was a primary focus of the system. A custom **JWT-based authentication** mechanism was implemented using Spring Security, including token generation, validation, and a request filter to secure protected endpoints. Role-based access control (RBAC) was designed dynamically, with roles and permissions stored in the database and enforced using method-level security (`@PreAuthorize`). The overall approach emphasized clean code, strong security practices, and adherence to Spring Boot best practices while building hospital management backend.
+
+## Challenges & Limitations
+
+The main challenges were implementing a dynamic role-based access control (RBAC) system, designing role–permission relationships, and integrating email functionality. These features were new to some team members, which required additional learning to implement correctly.
+
 
 # API Endpoints
 
@@ -40,7 +67,22 @@
 | GET | /api/permissions | Get all permissions | Admin |
 | PUT | /api/roles/{id}/permissions | Assign permissions to role | Admin |
 
-
+# Our ERD
+![ERD](erd.png)
 
 ## trello link
 https://trello.com/invite/b/695d2d0130962712434d4c6f/ATTIce8d7818f85a379fc47b04c978d056e56AE3CFDE/my-trello-board
+
+## Postman Collection
+
+A Postman collection is included for testing all API endpoints. You can import it into Postman to quickly explore the API.
+
+- **File location:** `Project2/Hospital.postman_collection.json`
+- **Environment variable:** The collection uses a Postman environment variable `{{baseUrl}}` to define the API base URL (`http://localhost:8080`). Make sure to set `{{baseUrl}}` in Postman before sending requests.
+- **To use:**
+    1. Open Postman → Click `Import`
+    2. Select the JSON file above
+    3. Set `BaseUrl` in the environment to your API URL
+    4. The collection with all endpoints will be loaded and ready to test
+
+> Ensure your environment variables for the application (email) are configured before testing the endpoints.

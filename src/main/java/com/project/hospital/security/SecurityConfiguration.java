@@ -12,23 +12,24 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-
     private MyUserDetailsService myUserDetailsService;
+    private JwtRequestFilter jwtRequestFilter;
 
     @Autowired
     public void setMyUserDetailsService(MyUserDetailsService myUserDetailsService) {
         this.myUserDetailsService = myUserDetailsService;
     }
 
-    @Bean
-    public JwtRequestFilter authenticationJwtTokenFilter() {
-        return new JwtRequestFilter();
+    @Autowired
+    public void setJwtRequestFilter(JwtRequestFilter jwtRequestFilter) {
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Bean
@@ -43,14 +44,19 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/users",
                                 "/auth/users/login",
                                 "/auth/users/register",
+                                "/api/auth/verify",
                                 "/auth/roles",
-                                "/auth/permissions"
+                                "/auth/permissions",
+                                "/auth/users/password/reset",
+                                "/auth/users/password/reset/page",
+                                "/auth/users/password/reset/submit"
                         ).permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -59,5 +65,4 @@ public class SecurityConfiguration {
             AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
 }

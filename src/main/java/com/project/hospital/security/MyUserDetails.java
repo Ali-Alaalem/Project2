@@ -1,7 +1,5 @@
 package com.project.hospital.security;
 
-
-import com.project.hospital.models.Role;
 import com.project.hospital.models.User;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,8 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class MyUserDetails implements UserDetails {
