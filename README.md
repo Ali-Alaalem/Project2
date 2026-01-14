@@ -70,7 +70,19 @@ The main challenges were implementing a dynamic role-based access control (RBAC)
 # Our ERD
 ![ERD](erd.png)
 
-
-
 ## trello link
 https://trello.com/invite/b/695d2d0130962712434d4c6f/ATTIce8d7818f85a379fc47b04c978d056e56AE3CFDE/my-trello-board
+
+## Postman Collection
+
+A Postman collection is included for testing all API endpoints. You can import it into Postman to quickly explore the API.
+
+- **File location:** `Project2/Hospital.postman_collection.json`
+- **Environment variable:** The collection uses a Postman environment variable `{{baseUrl}}` to define the API base URL (`http://localhost:8080`). Make sure to set `{{baseUrl}}` in Postman before sending requests.
+- **To use:**
+    1. Open Postman → Click `Import`
+    2. Select the JSON file above
+    3. Set `BaseUrl` in the environment to your API URL
+    4. The collection with all endpoints will be loaded and ready to test
+
+> Ensure your environment variables for the application (email) are configured before testing the endpoints.
