@@ -26,6 +26,22 @@ Security was a primary focus of the system. A custom **JWT-based authentication*
 
 The main challenges were implementing a dynamic role-based access control (RBAC) system, designing role–permission relationships, and integrating email functionality. These features were new to some team members, which required additional learning to implement correctly.
 
+## User Stories:
+### Admin
+- As an Admin, I want to view, create, update, and delete non-patient accounts(users)
+- As an Admin, I want to view, create, update, and delete rooms
+- As an Admin, I want to view, create, update, and delete treatment types
+- As an Admin, I want to link, unlink users with treatment types
+- As an Admin, I want to link, unlink rooms with treatment types
+### Doctor
+- As a Doctor, I want to view booked appointments
+- As a Doctor, I want to cancel appointments
+### Patient
+- As a Patient, I want to view available appointments
+- As a Patient, I want to book an appointment
+- As a Patient, I want to view booked appointments
+- As a Patient, I want to cancel booked appointment
+- As a Patient, I want to replace booked appointment
 
 # API Endpoints
 
