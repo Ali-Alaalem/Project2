@@ -28,34 +28,40 @@ The main challenges were implementing a dynamic role-based access control (RBAC)
 
 ## User Stories:
 #### Admin
-- As an Admin, I want to view non-patient accounts(users)
-- As an Admin, I want to create non-patient accounts(users)
-- As an Admin, I want to update non-patient accounts(users)
-- As an Admin, I want to delete non-patient accounts(users)
-- As an Admin, I want to view rooms
-- As an Admin, I want to create rooms
-- As an Admin, I want to update rooms
-- As an Admin, I want to delete rooms
-- As an Admin, I want to view treatment types
-- As an Admin, I want to create treatment types
-- As an Admin, I want to update treatment types
-- As an Admin, I want to delete treatment types
-- As an Admin, I want to link users with treatment types
-- As an Admin, I want to unlink users with treatment types
-- As an Admin, I want to link rooms with treatment types
-- As an Admin, I want to unlink rooms with treatment types
+- As an Admin, I want to view users to adminstrate
+- As an Admin, I want to create users to adminstrate
+- As an Admin, I want to update users to adminstrate
+- As an Admin, I want to delete users to adminstrate
+- As an Admin, I want to view rooms to adminstrate
+- As an Admin, I want to create rooms to adminstrate
+- As an Admin, I want to update rooms to adminstrate
+- As an Admin, I want to delete rooms to adminstrate
+- As an Admin, I want to view treatment types to adminstrate
+- As an Admin, I want to create treatment types to adminstrate
+- As an Admin, I want to update treatment types to adminstrate
+- As an Admin, I want to delete treatment types to adminstrate
+- As an Admin, I want to link users with treatment types to connect between doctors and treatment types 
+- As an Admin, I want to unlink users with treatment types to cancel the connection between doctors and treatment types
+- As an Admin, I want to link rooms with treatment types to connect between room and treatment types
+- As an Admin, I want to unlink rooms with treatment types to cancel the connection between rooms and treatment types
 #### Doctor
-- As a Doctor, I want to view booked appointments
-- As a Doctor, I want to cancel appointments
+- As a Doctor, I want to view booked appointments, to know what appoints do I have.
+- As a Doctor, I want to cancel appointments, so I let the patient know that the appointment is cancelled.
 #### Patient
-- As a Patient, I want to view available appointments
-- As a Patient, I want to book an appointment
-- As a Patient, I want to view booked appointments
-- As a Patient, I want to cancel a booked appointment
-- As a Patient, I want to update a booked appointment
+- As a Patient, I want to view available doctors, so I can decide which doctor to book with.
+- As a Patient, I want to view available appointments, so I can decide when to book.
+- As a Patient, I want to book an appointment, so I can visit the doctor.
+- As a Patient, I want to view booked appointments, to ensure the appointments were booked successfully and to check in case I forgot something.
+- As a Patient, I want to cancel a booked appointment, so I can take action when I can no longer attend the appointment or don't want to anymore and I don't want to change the time.
+- As a Patient, I want to update a booked appointment, so I can take action when I can no longer attend the appointment.
 #### Logged in user
-- As a logged in user, I want to view my profile
-- As a logged in user, I want to reset my password
+- As a logged in user, I want to view my profile, to ensure it is correct.
+- As a logged in user, I want to update my profile, to correct it if it's wrong.
+- As a logged in user, I want to reset my password, to improve security and to be able to login to the system in case I forgot my password.
+#### Guest
+- As a guest, I want to register as a patient, to be able to use the system.
+- As a guest, I want to view available doctors, to get more information.
+- As a guest, I want to view available appointments, to get more information.
 
 # API Endpoints
 
