@@ -1,4 +1,9 @@
 # Project2
+## Hospital Management System
+
+A backend RESTFUL API designed to manage hospital operations efficiently.The system handles user authentication, role-based access control, and core hospital workflows such as managing doctors, patients, appointments, bookings, rooms,etc...
+
+It supports multiple user roles **Admin**, **Doctor**, and **Patient** with secure access and clear separation of responsibilities.
 
 # API Endpoints
 
