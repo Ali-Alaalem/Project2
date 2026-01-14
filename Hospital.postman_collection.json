@@ -1,0 +1,589 @@
+{
+  "info": {
+    "name": "Hospital API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" },
+    { "key": "userId", "value": "1" },
+    { "key": "patientId", "value": "1" },
+    { "key": "doctorId", "value": "2" },
+    { "key": "roleId", "value": "1" },
+    { "key": "permissionId", "value": "1" },
+    { "key": "roomId", "value": "1" },
+    { "key": "treatmentTypeId", "value": "1" },
+    { "key": "appointmentId", "value": "1" },
+    { "key": "bookingId", "value": "1" },
+    { "key": "startDateTime", "value": "2026-01-10T00:00:00" },
+    { "key": "endDateTime", "value": "2026-02-10T00:00:00" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Verify Email Token",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/verify?token={{token}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Register (PATIENT)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Patient One\",\n  \"emailAddress\": \"patient@example.com\",\n  \"password\": \"123456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/users/register"
+          }
+        },
+        {
+          "name": "Login (sets {{token}})",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.message && json.message.split('.').length === 3) {",
+                  "    pm.collectionVariables.set('token', json.message);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@hospital.com\",\n  \"password\": \"admin123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/users/login"
+          }
+        },
+        {
+          "name": "Create Doctor (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Dr Ali\",\n  \"emailAddress\": \"doctor@example.com\",\n  \"password\": \"123456\",\n  \"treatmentTypeId\": {{treatmentTypeId}},\n  \"workDaysAndHours\": {\n    \"monday\": {\n      \"from\": \"09:00\",\n      \"to\": \"12:00\"\n    },\n    \"tuesday\": {\n      \"from\": \"09:00\",\n      \"to\": \"12:00\"\n    }\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/users/doctors"
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"123456\",\n  \"newPassword\": \"newpass123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/users/change/password"
+          }
+        },
+        {
+          "name": "Password Reset Email",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailAddress\": \"patient@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/users/password/reset"
+          }
+        },
+        {
+          "name": "Password Reset Page",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/users/password/reset/page?token={{token}}"
+          }
+        },
+        {
+          "name": "Password Reset Submit",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/users/password/reset/submit?token={{token}}&newPassword=newpass123"
+          }
+        },
+        {
+          "name": "Get Person By User",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/users/{{userId}}/person"
+          }
+        },
+        {
+          "name": "Create Person For User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Patient\",\n  \"lastName\": \"One\",\n  \"contactNumber\": 123456789,\n  \"address\": \"Manama\",\n  \"nationality\": \"Bahraini\",\n  \"gender\": \"M\",\n  \"age\": 25,\n  \"cpr\": 1234567890,\n  \"photo\": \"\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/users/{{userId}}/person"
+          }
+        },
+        {
+          "name": "Update Person For User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"personId\": 1,\n  \"firstName\": \"Patient\",\n  \"lastName\": \"One Updated\",\n  \"contactNumber\": 123456789,\n  \"address\": \"Manama\",\n  \"nationality\": \"Bahraini\",\n  \"gender\": \"M\",\n  \"age\": 26,\n  \"cpr\": 1234567890,\n  \"photo\": \"\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/users/{{userId}}/person"
+          }
+        },
+        {
+          "name": "Delete Person For User",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/auth/users/{{userId}}/person"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"ADMIN\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/roles/"
+          }
+        },
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/roles/"
+          }
+        },
+        {
+          "name": "Get Role By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/roles/{{roleId}}"
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/auth/roles/{{roleId}}"
+          }
+        },
+        {
+          "name": "Update Role (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"ADMIN_UPDATED\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/roles/{{roleId}}"
+          }
+        },
+        {
+          "name": "Set Role Permissions",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"id\": {{permissionId}}\n  }\n]",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/roles/{{roleId}}/permissions"
+          }
+        },
+        {
+          "name": "Remove Role Permission",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{permissionId}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/roles/{{roleId}}/permissions"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Permissions",
+      "item": [
+        {
+          "name": "Create Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"room:create\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/permissions/"
+          }
+        },
+        {
+          "name": "Get All Permissions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/permissions/"
+          }
+        },
+        {
+          "name": "Get Permission By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/permissions/{{permissionId}}"
+          }
+        },
+        {
+          "name": "Delete Permission",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/auth/permissions/{{permissionId}}"
+          }
+        },
+        {
+          "name": "Update Permission",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{permissionId}},\n  \"action\": \"room:view\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/permissions/{{permissionId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "TreatmentTypes",
+      "item": [
+        {
+          "name": "Create Treatment Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"Cardiology\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/treatmentTypes/"
+          }
+        },
+        {
+          "name": "Get All Treatment Types",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/treatmentTypes/"
+          }
+        },
+        {
+          "name": "Get Treatment Type By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/treatmentTypes/{{treatmentTypeId}}"
+          }
+        },
+        {
+          "name": "Delete Treatment Type",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/treatmentTypes/{{treatmentTypeId}}"
+          }
+        },
+        {
+          "name": "Update Treatment Type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{treatmentTypeId}},\n  \"type\": \"Cardiology Updated\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/treatmentTypes/{{treatmentTypeId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rooms",
+      "item": [
+        {
+          "name": "Create Room",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"101\",\n  \"description\": \"Cardiology Room\",\n  \"roomTreatmentType\": {\n    \"id\": {{treatmentTypeId}}\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/rooms/"
+          }
+        },
+        {
+          "name": "Get All Rooms",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/rooms/"
+          }
+        },
+        {
+          "name": "Get Room By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/rooms/{{roomId}}"
+          }
+        },
+        {
+          "name": "Update Room",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{roomId}},\n  \"roomNumber\": \"101\",\n  \"description\": \"Updated Room\",\n  \"roomTreatmentType\": {\n    \"id\": {{treatmentTypeId}}\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/rooms/{{roomId}}"
+          }
+        },
+        {
+          "name": "Delete Room",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/rooms/{{roomId}}"
+          }
+        },
+        {
+          "name": "Room Availability",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/rooms/{{roomId}}/availability?start={{startDateTime}}&end={{endDateTime}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Create Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctor\": {\n    \"id\": {{doctorId}}\n  },\n  \"room\": {\n    \"id\": {{roomId}}\n  },\n  \"startTime\": \"2026-01-10T09:00:00\",\n  \"endTime\": \"2026-01-10T09:30:00\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/appointments/"
+          }
+        },
+        {
+          "name": "Get All Appointments",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/appointments/"
+          }
+        },
+        {
+          "name": "Get Appointment By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/appointments/{{appointmentId}}"
+          }
+        },
+        {
+          "name": "Update Appointment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctor\": {\n    \"id\": {{doctorId}}\n  },\n  \"room\": {\n    \"id\": {{roomId}}\n  },\n  \"startTime\": \"2026-01-10T09:30:00\",\n  \"endTime\": \"2026-01-10T10:00:00\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/appointments/{{appointmentId}}"
+          }
+        },
+        {
+          "name": "Delete Appointment",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/appointments/{{appointmentId}}"
+          }
+        },
+        {
+          "name": "Book Appointment Slot (PATIENT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"appointmentId\": {{appointmentId}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/appointments/book"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking (manual)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookedAt\": \"2026-01-10T10:00:00\",\n  \"patient\": {\n    \"id\": {{patientId}}\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/bookings/"
+          }
+        },
+        {
+          "name": "Get All Bookings",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/bookings/"
+          }
+        },
+        {
+          "name": "Get Booking By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/bookings/{{bookingId}}"
+          }
+        },
+        {
+          "name": "Update Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{bookingId}},\n  \"bookedAt\": \"2026-01-10T11:00:00\",\n  \"patient\": {\n    \"id\": {{patientId}}\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/bookings/{{bookingId}}"
+          }
+        },
+        {
+          "name": "Delete Booking",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/bookings/{{bookingId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
