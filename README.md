@@ -22,6 +22,10 @@ The project was developed using a clean, layered architecture following the **Co
 
 Security was a primary focus of the system. A custom **JWT-based authentication** mechanism was implemented using Spring Security, including token generation, validation, and a request filter to secure protected endpoints. Role-based access control (RBAC) was designed dynamically, with roles and permissions stored in the database and enforced using method-level security (`@PreAuthorize`). The overall approach emphasized clean code, strong security practices, and adherence to Spring Boot best practices while building hospital management backend.
 
+## Challenges & Limitations
+
+The main challenges were implementing a dynamic role-based access control (RBAC) system, designing role–permission relationships, and integrating email functionality. These features were new to some team members, which required additional learning to implement correctly.
+
 
 # API Endpoints
 
