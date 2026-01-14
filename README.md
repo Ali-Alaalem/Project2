@@ -5,6 +5,17 @@ A backend RESTFUL API designed to manage hospital operations efficiently.The sys
 
 It supports multiple user roles **Admin**, **Doctor**, and **Patient** with secure access and clear separation of responsibilities.
 
+## Tools & Technologies
+
+- **Java 17**
+- **Spring Boot (MVC, Security, Data JPA)**
+- **JWT (JSON Web Tokens)** for authentication and authorization
+- **PostgreSQL** with **Hibernate (JPA)**
+- **Maven** for build and dependency management
+- **Lombok** to reduce boilerplate code
+- **Jackson** for JSON processing
+- **Spring Boot Mail** for email services
+
 # API Endpoints
 
 | Method | Endpoint | Description | Access Role |
