@@ -17,6 +17,7 @@ import com.project.hospital.security.JWTUtils;
 import com.project.hospital.security.MyUserDetails;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
@@ -74,21 +75,25 @@ public class UserService {
         return userRepository.findUserByEmailAddress(email);
     }
 
+    @Transactional
     public User createUser(User objectUser){
         if(!userRepository.existsByEmailAddress(objectUser.getEmailAddress())){
+User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress());
+
             objectUser.setPassword(passwordEncoder.encode(objectUser.getPassword()));
             Optional<Role> role=roleRepository.findByName("PATIENT");
             objectUser.setIsVerified(false);
             objectUser.setRole(role.get());
             User user=userRepository.save(objectUser);
-            String token= UUID.randomUUID().toString();
-            Token verifyToken= new Token();
-            verifyToken.setExpiryDate(LocalDateTime.now().plusHours(24));
-            verifyToken.setToken(token);
-            verifyToken.setUser(user);
-            verifyToken.setExpiryDate(LocalDateTime.now().plusHours(24));
-            tokenRepository.save(verifyToken);
-            tokenService.sendMail(user.getEmailAddress(), token);
+
+            Token tokenEntity = tokenRepository.findByUser(theUser)
+                    .orElse(new Token());
+
+            tokenEntity.setUser(theUser);
+            tokenEntity.setToken(UUID.randomUUID().toString());
+            tokenEntity.setExpiryDate(LocalDateTime.now().plusHours(24));
+            tokenRepository.save(tokenEntity);
+            tokenService.sendMail(user.getEmailAddress(), tokenEntity.getToken());
 
             return user;
         }else{ throw new InformationExistException("User with email address " +objectUser.getEmailAddress() + "already exist"); }
@@ -256,17 +261,21 @@ public class UserService {
             throw new InformationNotFoundException("No user with the id " + userId + "exists.");
         }
     }
-
+    @Transactional
     public void resetPasswordEmailSender(User user){
         User resetPassUser=userRepository.findUserByEmailAddress(user.getEmailAddress());
         if(resetPassUser != null) {
-            String token= UUID.randomUUID().toString();
-            Token verifyToken= new Token();
-            verifyToken.setToken(token);
-            verifyToken.setUser(resetPassUser);
-            verifyToken.setExpiryDate(LocalDateTime.now().plusHours(24));
-            tokenRepository.save(verifyToken);
-            this.sendMail(resetPassUser.getEmailAddress(), token);
+
+            Token tokenEntity = tokenRepository.findByUser(resetPassUser)
+                    .orElse(new Token());
+
+            tokenEntity.setUser(resetPassUser);
+            tokenEntity.setToken(UUID.randomUUID().toString());
+            tokenEntity.setExpiryDate(LocalDateTime.now().plusHours(24));
+            tokenRepository.save(tokenEntity);
+
+
+            this.sendMail(resetPassUser.getEmailAddress(), tokenEntity.getToken());
         }
         else{
             throw new InformationExistException("User with email address " +resetPassUser.getEmailAddress() + "does not exist");
