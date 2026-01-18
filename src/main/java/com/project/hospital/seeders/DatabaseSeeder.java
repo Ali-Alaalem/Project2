@@ -35,7 +35,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         seedRoles();
         seedAdminUser();
         seedPatientUser();
-
         log.info("Database seeding completed!");
     }
 
@@ -170,10 +169,11 @@ public class DatabaseSeeder implements CommandLineRunner {
         log.info("Created PATIENT role with {} permissions", patientPermissions.size());
     }
 
+
     private void seedPatientUser() {
         log.info("Seeding patient user...");
 
-        String patientEmail = "akbar.alsaleh@gmail.com";
+        String patientEmail = "patient@gmail.com";
         String patientPassword = "patient123";
 
         if (userRepository.existsByEmailAddress(patientEmail)) {
