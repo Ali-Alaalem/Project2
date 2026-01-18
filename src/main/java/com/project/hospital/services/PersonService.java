@@ -58,13 +58,14 @@ public class PersonService {
     }
 
     // to-do: consider making cpr the id field.
-    public Person createPerson(Person person){
+    public Person createPerson(MultipartFile multipartFile, Person person) throws IOException {
         System.out.println("Service is calling createPerson");
-        if(this.personRepository.findById(person.getPersonId()).isEmpty()){
+
+           String imageURL= cloudinary.uploader().upload(multipartFile.getBytes(),
+                    Map.of("public_id", UUID.randomUUID().toString())).get("url").toString();
+           person.setPhoto(imageURL);
             return this.personRepository.save(person);
-        }else{
-            throw new InformationExistException("A person with the id " + person.getPersonId() + " already exists");
-        }
+
     }
 
     public Person deletePerson(Long personId){
