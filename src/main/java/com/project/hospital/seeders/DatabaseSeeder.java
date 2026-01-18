@@ -162,6 +162,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         addPermissionsForModel(patientPermissions, permissionMap, "treatmenttype",
                 Arrays.asList("view"));
 
+
         patientRole.setPermissions(patientPermissions);
         roleRepository.save(patientRole);
         log.info("Created PATIENT role with {} permissions", patientPermissions.size());

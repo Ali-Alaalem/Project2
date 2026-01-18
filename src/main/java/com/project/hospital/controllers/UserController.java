@@ -1,5 +1,6 @@
 package com.project.hospital.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hospital.models.PasswordChangeRequest;
 import com.project.hospital.models.Person;
 import com.project.hospital.models.User;
@@ -7,14 +8,20 @@ import com.project.hospital.models.request.CreateDoctorRequest;
 import com.project.hospital.models.request.LoginRequest;
 import com.project.hospital.services.PersonService;
 import com.project.hospital.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/auth/users")
+@RequiredArgsConstructor
 public class UserController {
     private UserService userService;
     private PersonService personService;
@@ -89,6 +96,7 @@ public class UserController {
         person.setUser(user);
         return this.personService.createPerson(person);
     }
+
 
     @PutMapping("/{userId}/person")
     @PreAuthorize("hasAuthority('user:update')")
