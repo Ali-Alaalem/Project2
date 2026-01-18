@@ -1,21 +1,29 @@
 package com.project.hospital.services;
 
+import com.cloudinary.Cloudinary;
 import com.project.hospital.exceptions.InformationExistException;
 import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.Person;
 import com.project.hospital.models.User;
 import com.project.hospital.repositorys.PersonRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.plugins.jpeg.JPEGImageReadParam;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PersonService {
     private PersonRepository personRepository;
+    private final Cloudinary cloudinary;
 
     @Autowired
     public void setPersonRepository(PersonRepository personRepository) {
@@ -50,13 +58,14 @@ public class PersonService {
     }
 
     // to-do: consider making cpr the id field.
-    public Person createPerson(Person person){
+    public Person createPerson(MultipartFile multipartFile, Person person) throws IOException {
         System.out.println("Service is calling createPerson");
-        if(this.personRepository.findById(person.getPersonId()).isEmpty()){
+
+           String imageURL= cloudinary.uploader().upload(multipartFile.getBytes(),
+                    Map.of("public_id", UUID.randomUUID().toString())).get("url").toString();
+           person.setPhoto(imageURL);
             return this.personRepository.save(person);
-        }else{
-            throw new InformationExistException("A person with the id " + person.getPersonId() + " already exists");
-        }
+
     }
 
     public Person deletePerson(Long personId){

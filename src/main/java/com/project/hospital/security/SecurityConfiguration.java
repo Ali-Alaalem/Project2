@@ -51,7 +51,8 @@ public class SecurityConfiguration {
                                 "/auth/permissions",
                                 "/auth/users/password/reset",
                                 "/auth/users/password/reset/page",
-                                "/auth/users/password/reset/submit"
+                                "/auth/users/password/reset/submit",
+                                "/upload"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
