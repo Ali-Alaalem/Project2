@@ -88,13 +88,24 @@ public class UserController {
         return this.personService.getPersonByUser(user);
     }
 
-    @PostMapping("/{userId}/person")
+    @PostMapping(
+            value = "/{userId}/person",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     @PreAuthorize("hasAuthority('user:update')")
-    public Person createPerson(@PathVariable("userId") Long userId, @RequestBody Person person){
-        System.out.println("Controller calling ==> createPerson()");
-        User user = this.userService.getUser(userId);
+    public Person createPerson(
+            @RequestPart("image") MultipartFile image,
+            @RequestPart("person") String personJson,
+            @PathVariable Long userId
+    ) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Person person = objectMapper.readValue(personJson, Person.class);
+
+        User user = userService.getUser(userId);
         person.setUser(user);
-        return this.personService.createPerson(person);
+
+        return personService.createPerson(image, person);
     }
 
 
