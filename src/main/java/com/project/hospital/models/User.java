@@ -63,6 +63,10 @@ public class User {
     private Set<Booking> bookings = new HashSet<>();
 
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Token token;
+
     @Column
     @CreationTimestamp
     private LocalDateTime createdDate;

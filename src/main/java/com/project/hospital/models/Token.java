@@ -21,7 +21,9 @@ public class Token {
     private String token;
 
     @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
 
     private LocalDateTime expiryDate;
 
