@@ -34,6 +34,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         seedPermissions();
         seedRoles();
         seedAdminUser();
+        seedPatientUser();
 
         log.info("Database seeding completed!");
     }
@@ -167,6 +168,37 @@ public class DatabaseSeeder implements CommandLineRunner {
         patientRole.setPermissions(patientPermissions);
         roleRepository.save(patientRole);
         log.info("Created PATIENT role with {} permissions", patientPermissions.size());
+    }
+
+    private void seedPatientUser() {
+        log.info("Seeding patient user...");
+
+        String patientEmail = "akbar.alsaleh@gmail.com";
+        String patientPassword = "patient123";
+
+        if (userRepository.existsByEmailAddress(patientEmail)) {
+            log.info("Patient user already exists. Skipping patient user seeding.");
+            return;
+        }
+
+        Role patientRole = roleRepository.findByName("PATIENT").orElse(null);
+        if (patientRole == null) {
+            log.warn("PATIENT role not found. Skipping patient user creation.");
+            return;
+        }
+
+        User patient = new User();
+        Person person = new Person(); // You'll need to set up person details if required
+
+        patient.setFullName("Patient User");
+        patient.setEmailAddress(patientEmail);
+        patient.setPassword(passwordEncoder.encode(patientPassword));
+        patient.setIsVerified(true);
+        patient.setRole(patientRole);
+        patient.setPerson(person);
+
+        userRepository.save(patient);
+        log.info("Created default patient user: {} (password: {})", patientEmail, patientPassword);
     }
 
     private void addPermissionsForModel(Set<Permission> permissions,
