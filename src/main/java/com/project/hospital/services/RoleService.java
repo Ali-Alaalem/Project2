@@ -5,6 +5,7 @@ import com.project.hospital.exceptions.InformationExistException;
 import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.Permission;
 import com.project.hospital.models.Role;
+import com.project.hospital.repositorys.PermissionRepository;
 import com.project.hospital.repositorys.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,13 @@ import java.util.Set;
 @Service
 public class RoleService {
     private final RoleRepository roleRepository;
+    private final PermissionRepository permissionRepository;
 
 
     @Autowired
-    public RoleService(RoleRepository roleRepository) {
+    public RoleService(PermissionRepository permissionRepository,RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
+        this.permissionRepository=permissionRepository;
     }
 
 
@@ -87,9 +90,13 @@ public class RoleService {
 
         return roleRepository.save(existingRole);
     }
-    public Role removeRolePermission(Long roleId, Permission permission){
+    public Role removeRolePermission(Long roleId, Long permissionId){
         Role existingRole = roleRepository.findById(roleId).orElseThrow(
                 ()->new InformationNotFoundException("Role with id does not exist")
+        );
+
+        Permission permission =permissionRepository.findById(permissionId).orElseThrow(
+                ()->new InformationNotFoundException("permission with id does not exist")
         );
 
         existingRole.getPermissions().remove(permission);
