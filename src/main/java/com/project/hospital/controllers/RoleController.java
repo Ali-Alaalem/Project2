@@ -44,21 +44,21 @@ public class RoleController {
         return roleService.deleteRoleById(roleId);
     }
 
-    @PostMapping("/{roleId}")
+    @PutMapping("/{roleId}")
     @PreAuthorize("hasAuthority('role:update')")
     public Role updateRole(@PathVariable("roleId") Long roleId, @RequestBody Role role) {
         return roleService.updateRole(roleId, role);
     }
 
-    @PutMapping("/{roleId}/permissions")
+    @PostMapping("/{roleId}/permissions")
     @PreAuthorize("hasAuthority('role:update')")
     public Role updateRolePermissions(@PathVariable("roleId") Long roleId, @RequestBody Set<Permission> permissions) {
         return roleService.updateRolePermissions(roleId, permissions);
     }
 
-    @DeleteMapping("/{roleId}/permissions")
+    @DeleteMapping("/{roleId}/permissions/{permissionId}")
     @PreAuthorize("hasAuthority('role:update')")
-    public Role removeRolePermission(@PathVariable("roleId") Long roleId, @RequestBody Permission permission) {
-        return roleService.removeRolePermission(roleId, permission);
+    public Role removeRolePermission(@PathVariable("roleId") Long roleId, @PathVariable("permissionId") Long permissionId) {
+        return roleService.removeRolePermission(roleId, permissionId);
     }
 }
