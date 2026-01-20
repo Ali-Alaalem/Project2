@@ -37,6 +37,8 @@ public class User {
 
     private Boolean isVerified=false;
 
+    private Boolean isDeleted=false;
+
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
@@ -65,7 +67,7 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private Token token;
+    private VerificationToken emailToken;
 
     @Column
     @CreationTimestamp
@@ -80,6 +82,7 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL )
     @JoinColumn(name = "id", referencedColumnName = "person_id")
     private Person person;
+
 
 
 }
