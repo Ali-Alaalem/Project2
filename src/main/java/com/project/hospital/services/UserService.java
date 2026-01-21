@@ -7,12 +7,7 @@ import com.project.hospital.models.*;
 import com.project.hospital.models.request.CreateDoctorRequest;
 import com.project.hospital.models.request.LoginRequest;
 import com.project.hospital.models.response.LoginResponse;
-import com.project.hospital.repositorys.AppointmentRepository;
-import com.project.hospital.repositorys.RoleRepository;
-import com.project.hospital.repositorys.RoomRepository;
-import com.project.hospital.repositorys.TreatmentTypeRepository;
-import com.project.hospital.repositorys.TokenRepository;
-import com.project.hospital.repositorys.UserRepository;
+import com.project.hospital.repositorys.*;
 import com.project.hospital.security.JWTUtils;
 import com.project.hospital.security.MyUserDetails;
 import jakarta.mail.MessagingException;
@@ -51,10 +46,11 @@ public class UserService {
     private final TreatmentTypeRepository treatmentTypeRepository;
     private final RoomRepository roomRepository;
     private final AppointmentRepository appointmentRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
     @Value("${sender.email}")
     private String senderEmail;
 
-    public UserService(TokenService tokenService, TokenRepository tokenRepository, UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder,
+    public UserService( VerificationTokenRepository verificationTokenRepository,TokenService tokenService, TokenRepository tokenRepository, UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder,
                        JWTUtils jwtUtils, @Lazy AuthenticationManager authenticationManager, @Lazy MyUserDetails myUserDetails, RoleRepository roleRepository, JavaMailSender mailSender,
                        TreatmentTypeRepository treatmentTypeRepository, RoomRepository roomRepository, AppointmentRepository appointmentRepository){
         this.userRepository=userRepository;
@@ -69,6 +65,7 @@ public class UserService {
         this.treatmentTypeRepository = treatmentTypeRepository;
         this.roomRepository = roomRepository;
         this.appointmentRepository = appointmentRepository;
+        this.verificationTokenRepository=verificationTokenRepository;
     }
 
     public User findUserByEmailAddress(String email) {
@@ -84,16 +81,16 @@ User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress())
             Optional<Role> role=roleRepository.findByName("PATIENT");
             objectUser.setIsVerified(false);
             objectUser.setRole(role.get());
+            objectUser.setIsDeleted(false);
             User user=userRepository.save(objectUser);
 
-            Token tokenEntity = tokenRepository.findByUser(theUser)
-                    .orElse(new Token());
+            VerificationToken verificationToken = new VerificationToken();
+            verificationToken.setUser(user);
+            verificationToken.setToken(UUID.randomUUID().toString());
+            verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
 
-            tokenEntity.setUser(theUser);
-            tokenEntity.setToken(UUID.randomUUID().toString());
-            tokenEntity.setExpiryDate(LocalDateTime.now().plusHours(24));
-            tokenRepository.save(tokenEntity);
-            tokenService.sendMail(user.getEmailAddress(), tokenEntity.getToken());
+            verificationTokenRepository.save(verificationToken);
+            tokenService.sendMail(user.getEmailAddress(), verificationToken.getToken());
 
             return user;
         }else{ throw new InformationExistException("User with email address " +objectUser.getEmailAddress() + "already exist"); }
@@ -213,17 +210,18 @@ User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress())
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             myUserDetails=(MyUserDetails) authentication.getPrincipal();
-            if(myUserDetails.getUser().getIsVerified()){
+            if(myUserDetails.getUser().getIsVerified() &&myUserDetails.getUser().getIsDeleted()==false){
             final String JWT =jwtUtils.generateJwtToken(myUserDetails);
             return ResponseEntity.ok(new LoginResponse(JWT));
             }else{
-                return ResponseEntity.ok(new LoginResponse("Your Account is not verified"));
+                return ResponseEntity.ok(new LoginResponse("Your Account is not verified or deleted"));
             }
         }catch (Exception e){
             return ResponseEntity.ok(new LoginResponse("Error :User name of password is incorrect"));
         }
 
     }
+
 
     public User getUser(Long userId){
         System.out.println("Service calling ==> getUser()");
@@ -261,21 +259,43 @@ User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress())
             throw new InformationNotFoundException("No user with the id " + userId + "exists.");
         }
     }
+
+
+
+    public void  softDeleteUser(Authentication authentication,Long userId){
+        System.out.println("Service calling ==> deleteUser()");
+        Optional<User> forginUser=userRepository.findById(userId);
+        String currentLoggedUserEmail = authentication.getName();
+        User userLoggedIn=userRepository.findUserByEmailAddress(currentLoggedUserEmail);
+        if(userLoggedIn.getRole().getId()!=1 ){
+            throw new InformationExistException("User does not have permission ");
+        }
+        else if(!forginUser.isPresent()) {
+            throw new InformationExistException("the user wanted to be deleted is not exist");
+        }
+if(forginUser.get().getIsDeleted()==true){
+    forginUser.get().setIsDeleted(false);
+    userRepository.save(forginUser.get());
+}else {
+    forginUser.get().setIsDeleted(true);
+    userRepository.save(forginUser.get());
+}
+    }
+
+
     @Transactional
     public void resetPasswordEmailSender(User user){
         User resetPassUser=userRepository.findUserByEmailAddress(user.getEmailAddress());
         if(resetPassUser != null) {
 
-            Token tokenEntity = tokenRepository.findByUser(resetPassUser)
-                    .orElse(new Token());
+            VerificationToken verificationToken = new VerificationToken();
+            verificationToken.setUser(user);
+            verificationToken.setToken(UUID.randomUUID().toString());
+            verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
 
-            tokenEntity.setUser(resetPassUser);
-            tokenEntity.setToken(UUID.randomUUID().toString());
-            tokenEntity.setExpiryDate(LocalDateTime.now().plusHours(24));
-            tokenRepository.save(tokenEntity);
+            verificationTokenRepository.save(verificationToken);
+            tokenService.sendMail(user.getEmailAddress(), verificationToken.getToken());
 
-
-            this.sendMail(resetPassUser.getEmailAddress(), tokenEntity.getToken());
         }
         else{
             throw new InformationExistException("User with email address " +resetPassUser.getEmailAddress() + "does not exist");

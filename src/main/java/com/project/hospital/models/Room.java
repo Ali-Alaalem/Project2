@@ -1,6 +1,7 @@
 package com.project.hospital.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.hospital.converters.WorkDaysAndHoursConverter;
 import lombok.*;
 import jakarta.persistence.*;
@@ -45,8 +46,12 @@ public class Room {
     private Set<Appointment> appointments;
 
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
+    //    @JsonIgnore
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "treatment_type_id", unique = true)
+//    private TreatmentType roomTreatmentType;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "treatment_type_id", unique = true)
     private TreatmentType roomTreatmentType;
 

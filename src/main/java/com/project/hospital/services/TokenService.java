@@ -5,8 +5,10 @@ package com.project.hospital.services;
 import com.project.hospital.exceptions.InformationNotFoundException;
 import com.project.hospital.models.Token;
 import com.project.hospital.models.User;
+import com.project.hospital.models.VerificationToken;
 import com.project.hospital.repositorys.TokenRepository;
 import com.project.hospital.repositorys.UserRepository;
+import com.project.hospital.repositorys.VerificationTokenRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,16 +26,18 @@ public class TokenService {
     private final JavaMailSender mailSender;
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
+    private VerificationTokenRepository verificationTokenRepository;
 
 
 
     @Value("${sender.email}")
     private String senderEmail;
 
-    public TokenService(JavaMailSender mailSender, TokenRepository tokenRepository, UserRepository userRepository) {
+    public TokenService(VerificationTokenRepository verificationTokenRepository,JavaMailSender mailSender, TokenRepository tokenRepository, UserRepository userRepository) {
         this.mailSender = mailSender;
         this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
+        this.verificationTokenRepository=verificationTokenRepository;
     }
 
 
@@ -89,13 +93,13 @@ public class TokenService {
     }
 
     public String verifyToken(String token){
-        Optional<Token> userToken= tokenRepository.findByToken(token);
+        Optional<VerificationToken> userToken= verificationTokenRepository.findByToken(token);
         if (userToken.isPresent() && userToken.get().getExpiryDate().isAfter(LocalDateTime.now()))
         {
             User user=userToken.get().getUser();
             user.setIsVerified(true);
             userRepository.save(user);
-            tokenRepository.delete(userToken.get());
+            verificationTokenRepository.delete(userToken.get());
             return "User " + user.getEmailAddress() + " verified successfully!";
         }else{
             throw new InformationNotFoundException("Sorry the token is expired");
