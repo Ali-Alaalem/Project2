@@ -88,21 +88,21 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('user:view')")
     @GetMapping("/{userId}")
-    public User GetUser(@RequestParam Long userId){
+    public User GetUser(@PathVariable Long userId){
         System.out.println("Controller calling ==> getUser()");
         return userService.getUser(userId);
     }
 
     @PreAuthorize("hasAuthority('user:update')")
-    @PostMapping("/{userId}/")
-    public User CreateUser(@RequestParam Long userId, @RequestBody User user){
+    @PutMapping("/{userId}/")
+    public User UpdateUser(@PathVariable Long userId, @RequestBody User user){
         System.out.println("Controller calling ==> UpdateUser()");
         return userService.updateUser(userId, user);
     }
 
     @PreAuthorize("hasAuthority('user:delete')")
     @DeleteMapping("/{userId}")
-    public User DeleteUser(@RequestParam Long userId){
+    public User DeleteUser(@PathVariable Long userId){
         System.out.println("Controller calling ==> DeleteUser()");
         return userService.deleteUser(userId);
     }
