@@ -3,6 +3,7 @@ package com.project.hospital.controllers;
 import com.project.hospital.models.TreatmentType;
 import com.project.hospital.services.TreatmentTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,8 +40,10 @@ public class TreatmentTypeController {
 
     @DeleteMapping("/{treatmentTypeId}")
     @PreAuthorize("hasAuthority('treatmenttype:delete')")
-    public TreatmentType deleteTreatmentTypeById(@PathVariable("treatmentTypeId") Long treatmentTypeId) {
-        return treatmentTypeService.deleteTreatmentTypeById(treatmentTypeId);
+    public ResponseEntity<Void> deleteTreatmentTypeById(@PathVariable("treatmentTypeId") Long treatmentTypeId) {
+        treatmentTypeService.deleteTreatmentTypeById(treatmentTypeId);
+        return ResponseEntity.noContent().build();
+
     }
 
     @PutMapping("/{treatmentTypeId}")

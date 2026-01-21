@@ -31,10 +31,20 @@ public class RoomService {
             throw new InformationExistException("Room number already exists");
         }
 
-        if (roomRepository.existsByRoomTreatmentType(room.getRoomTreatmentType())) {
+        // Fetch the actual managed TreatmentType entity from DB
+        TreatmentType sentType = room.getRoomTreatmentType();
+        if (sentType.getId() == null) {
+            throw new IllegalArgumentException("Treatment type ID must be provided");
+        }
+
+        TreatmentType actualType = treatmentTypeRepository.findById(sentType.getId())
+                .orElseThrow(() -> new InformationNotFoundException("Treatment type not found"));
+
+        if (roomRepository.existsByRoomTreatmentType(actualType)) {
             throw new InformationExistException("There is another room with the same treatment type");
         }
 
+        room.setRoomTreatmentType(actualType);
         return roomRepository.save(room);
     }
 

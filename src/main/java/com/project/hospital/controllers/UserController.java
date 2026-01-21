@@ -120,9 +120,9 @@ public class UserController {
 
     @PutMapping("/{userId}/user")
     @PreAuthorize("hasAuthority('user:update')")
-    public User softDeleteUser(Authentication authentication,@PathVariable("userId") Long userId){
+    public void softDeleteUser(Authentication authentication,@PathVariable("userId") Long userId){
         System.out.println("Controller calling ==> softDeleteUser()");
-       return userService.softDeleteUser(authentication,userId);
+        userService.softDeleteUser(authentication,userId);
     }
 
 
