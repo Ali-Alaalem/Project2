@@ -81,6 +81,7 @@ User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress())
             Optional<Role> role=roleRepository.findByName("PATIENT");
             objectUser.setIsVerified(false);
             objectUser.setRole(role.get());
+            objectUser.setIsDeleted(false);
             User user=userRepository.save(objectUser);
 
             VerificationToken verificationToken = new VerificationToken();
@@ -261,16 +262,24 @@ User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress())
 
 
 
-    public User  softDeleteUser(Authentication authentication,Long userId){
+    public void  softDeleteUser(Authentication authentication,Long userId){
         System.out.println("Service calling ==> deleteUser()");
         Optional<User> forginUser=userRepository.findById(userId);
         String currentLoggedUserEmail = authentication.getName();
         User userLoggedIn=userRepository.findUserByEmailAddress(currentLoggedUserEmail);
-        if(userLoggedIn.getRole().getId()!=1 && forginUser.isPresent()){
-            throw new InformationExistException("User does not have permission or the user wanted to be deleted is not exist");
+        if(userLoggedIn.getRole().getId()!=1 ){
+            throw new InformationExistException("User does not have permission ");
         }
-        forginUser.get().setIsDeleted(true);
-        return userRepository.save(forginUser.get());
+        else if(!forginUser.isPresent()) {
+            throw new InformationExistException("the user wanted to be deleted is not exist");
+        }
+if(forginUser.get().getIsDeleted()==true){
+    forginUser.get().setIsDeleted(false);
+    userRepository.save(forginUser.get());
+}else {
+    forginUser.get().setIsDeleted(true);
+    userRepository.save(forginUser.get());
+}
     }
 
 
