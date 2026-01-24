@@ -253,8 +253,9 @@ User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress())
         System.out.println("Service calling ==> deleteUser()");
         Optional<User> user = this.userRepository.findById(userId);
         if(user.isPresent()){
-            this.userRepository.delete(user.get());
-            return user.get();
+            User delUser = user.get();
+            this.userRepository.delete(delUser);
+            return delUser;
         }else{
             throw new InformationNotFoundException("No user with the id " + userId + "exists.");
         }
