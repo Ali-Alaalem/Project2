@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('user:update')")
-    @PutMapping("/{userId}/")
+    @PutMapping("/{userId}")
     public User UpdateUser(@PathVariable Long userId, @RequestBody User user){
         System.out.println("Controller calling ==> UpdateUser()");
         return userService.updateUser(userId, user);
