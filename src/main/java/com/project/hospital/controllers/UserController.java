@@ -79,6 +79,34 @@ public class UserController {
         return userService.ChangePassword(authentication,request);
     }
 
+    @PreAuthorize("hasAuthority('user:create')")
+    @PostMapping("/")
+    public User CreateUser(@RequestBody User user){
+        System.out.println("Controller calling ==> CreateUser()");
+        return userService.createUser(user);
+    }
+
+    @PreAuthorize("hasAuthority('user:view')")
+    @GetMapping("/{userId}")
+    public User GetUser(@PathVariable Long userId){
+        System.out.println("Controller calling ==> getUser()");
+        return userService.getUser(userId);
+    }
+
+    @PreAuthorize("hasAuthority('user:update')")
+    @PutMapping("/{userId}")
+    public User UpdateUser(@PathVariable Long userId, @RequestBody User user){
+        System.out.println("Controller calling ==> UpdateUser()");
+        return userService.updateUser(userId, user);
+    }
+
+    @PreAuthorize("hasAuthority('user:delete')")
+    @DeleteMapping("/{userId}")
+    public User DeleteUser(@PathVariable Long userId){
+        System.out.println("Controller calling ==> DeleteUser()");
+        return userService.deleteUser(userId);
+    }
+
 
     @GetMapping("/{userId}/person")
     @PreAuthorize("hasAuthority('user:view')")

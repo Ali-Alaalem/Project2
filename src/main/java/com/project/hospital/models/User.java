@@ -39,7 +39,7 @@ public class User {
 
     private Boolean isDeleted=false;
 
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
@@ -62,6 +62,7 @@ public class User {
     private TreatmentType userTreatmentType;
 
     @OneToMany(mappedBy = "patient")
+    @JsonIgnore
     private Set<Booking> bookings = new HashSet<>();
 
 
@@ -79,7 +80,7 @@ public class User {
     private LocalDateTime updatedDate;
 
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL )
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
     @JoinColumn(name = "id", referencedColumnName = "person_id")
     private Person person;
 

@@ -2,6 +2,7 @@ package com.project.hospital.security;
 
 import com.project.hospital.models.User;
 import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 public class MyUserDetails implements UserDetails {
     private User user;
 
+    @Autowired
     public MyUserDetails(User user) {
         this.user = user;
     }

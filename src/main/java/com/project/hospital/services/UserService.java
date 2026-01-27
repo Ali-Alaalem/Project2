@@ -242,8 +242,9 @@ User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress())
         System.out.println("Service calling ==> updateUser()");
         Optional<User> userObject = this.userRepository.findById(userId);
         if(userObject.isPresent()){
-            user.setId(userId);
-            return this.userRepository.save(user);
+            userObject.get().setEmailAddress(user.getEmailAddress());
+            userObject.get().setFullName(user.getFullName());
+            return this.userRepository.save(userObject.get());
         }else{
             throw new InformationNotFoundException("No user with the id " + userId + "exists.");
         }
@@ -253,8 +254,9 @@ User theUser=userRepository.findUserByEmailAddress(objectUser.getEmailAddress())
         System.out.println("Service calling ==> deleteUser()");
         Optional<User> user = this.userRepository.findById(userId);
         if(user.isPresent()){
-            this.userRepository.delete(user.get());
-            return user.get();
+            User delUser = user.get();
+            this.userRepository.delete(delUser);
+            return delUser;
         }else{
             throw new InformationNotFoundException("No user with the id " + userId + "exists.");
         }
